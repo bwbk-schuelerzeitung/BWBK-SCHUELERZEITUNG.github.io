@@ -163,6 +163,19 @@ a {
     background: rgba(255, 255, 255, 0.78);
 }
 
+.since-label {
+    flex-shrink: 0;
+
+    color: rgba(255, 255, 255, 0.58);
+
+    font-family: Garamond, Georgia, "Times New Roman", serif;
+    font-size: 0.85rem;
+    font-style: italic;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+
 /* HERO */
 
 .hero {
