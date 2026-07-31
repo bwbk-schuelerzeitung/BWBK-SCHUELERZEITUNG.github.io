@@ -24,6 +24,12 @@ async function loadIssues() {
                 </p>
             `;
 
+            archiveContainer.innerHTML = `
+                <p class="status-message">
+                    Das Archiv ist noch leer.
+                </p>
+            `;
+
             return;
         }
 
@@ -33,8 +39,15 @@ async function loadIssues() {
                 new Date(first.publishedAt)
         );
 
-        renderCurrentIssue(sortedIssues[0], currentContainer);
-        renderArchive(sortedIssues.slice(1), archiveContainer);
+        renderCurrentIssue(
+            sortedIssues[0],
+            currentContainer
+        );
+
+        renderArchive(
+            sortedIssues.slice(1),
+            archiveContainer
+        );
     } catch (error) {
         console.error(error);
 
@@ -43,6 +56,8 @@ async function loadIssues() {
                 Die Ausgaben konnten leider nicht geladen werden.
             </p>
         `;
+
+        archiveContainer.innerHTML = "";
     }
 }
 
@@ -76,9 +91,7 @@ function renderCurrentIssue(issue, container) {
 
                 <a
                     class="primary-button"
-                    href="${escapeHtml(issue.pdf)}"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="${createReaderUrl(issue)}"
                 >
                     Ausgabe lesen
                 </a>
@@ -111,7 +124,9 @@ function renderArchive(issues, container) {
                     </div>
 
                     <div class="archive-content">
-                        <h3>${escapeHtml(issue.title)}</h3>
+                        <h3>
+                            ${escapeHtml(issue.title)}
+                        </h3>
 
                         <p>
                             Ausgabe ${escapeHtml(String(issue.number))}
@@ -120,9 +135,7 @@ function renderArchive(issues, container) {
 
                         <a
                             class="archive-button"
-                            href="${escapeHtml(issue.pdf)}"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href="${createReaderUrl(issue)}"
                         >
                             Ausgabe öffnen →
                         </a>
@@ -133,6 +146,15 @@ function renderArchive(issues, container) {
         .join("");
 }
 
+function createReaderUrl(issue) {
+    const params = new URLSearchParams({
+        pdf: issue.pdf,
+        title: issue.title
+    });
+
+    return `lesen.html?${params.toString()}`;
+}
+
 function formatDate(dateString) {
     return new Intl.DateTimeFormat("de-DE", {
         month: "long",
@@ -141,7 +163,7 @@ function formatDate(dateString) {
 }
 
 function escapeHtml(value) {
-    return value
+    return String(value)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")

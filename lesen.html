@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta name="theme-color" content="#0f172a">
+
+    <title>Ausgabe lesen · BWBK Aktuell</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/icons/favicon.png"
+    >
+
+    <link rel="stylesheet" href="reader.css">
+
+    <script
+        type="module"
+        src="reader.js"
+    ></script>
+</head>
+
+<body>
+    <header class="reader-header">
+        <a class="back-link" href="./">
+            ← Zurück
+        </a>
+
+        <div>
+            <p class="reader-brand">BWBK Aktuell</p>
+            <h1 id="reader-title">Ausgabe wird geladen …</h1>
+        </div>
+    </header>
+
+    <main>
+        <div
+            id="reader-status"
+            class="reader-status"
+        >
+            PDF wird geladen …
+        </div>
+
+        <div
+            id="pdf-pages"
+            class="pdf-pages"
+            aria-live="polite"
+        ></div>
+    </main>
+
+    <footer class="reader-footer">
+        <a
+            id="original-pdf-link"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Original-PDF öffnen
+        </a>
+    </footer>
+</body>
+</html>
