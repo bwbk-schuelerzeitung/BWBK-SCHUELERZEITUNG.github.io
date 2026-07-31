@@ -1,6 +1,6 @@
 "use strict";
 
-const DATA_URL = "./data/ausgaben.json";
+const DATA_URL = "./data/issues.json";
 
 async function loadIssues() {
     const currentContainer = document.querySelector("#current-issue");
