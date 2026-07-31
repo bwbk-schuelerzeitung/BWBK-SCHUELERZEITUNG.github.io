@@ -1,0 +1,10 @@
+[
+    {
+        "number": 1,
+        "title": "Unsere erste Ausgabe",
+        "publishedAt": "2026-07-31",
+        "description": "Die erste Ausgabe der Schülerzeitung des Bergischen Weiterbildungskollegs.",
+        "cover": "https://placehold.co/900x1200/202229/ffffff?text=BWBK%0ASchuelerzeitung",
+        "pdf": "pdf/erste-ausgabe.pdf"
+    }
+]

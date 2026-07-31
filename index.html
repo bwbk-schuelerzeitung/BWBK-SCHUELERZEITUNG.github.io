@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Die Schülerzeitung des Bergischen Weiterbildungskollegs"
+    >
+
+    <meta name="theme-color" content="#15171c">
+
+    <title>BWBK Schülerzeitung</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-content">
+            <p class="school-name">
+                Bergisches Weiterbildungskolleg
+            </p>
+
+            <h1>Schülerzeitung</h1>
+
+            <p class="intro">
+                Nachrichten, Geschichten und Perspektiven aus unserer Schule.
+            </p>
+        </div>
+    </header>
+
+    <main>
+        <section class="section current-section">
+            <div class="section-heading">
+                <p class="eyebrow">Neu erschienen</p>
+                <h2>Aktuelle Ausgabe</h2>
+            </div>
+
+            <div id="current-issue">
+                <p class="status-message">
+                    Ausgabe wird geladen …
+                </p>
+            </div>
+        </section>
+
+        <section class="section archive-section">
+            <div class="section-heading">
+                <p class="eyebrow">Alle Veröffentlichungen</p>
+                <h2>Archiv</h2>
+            </div>
+
+            <div id="archive" class="archive-grid"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>
+            Schülerzeitung des Bergischen Weiterbildungskollegs
+        </p>
+
+        <p>
+            Keine Kommentare · Kein Tracking · Keine Werbung
+        </p>
+    </footer>
+</body>
+</html>
