@@ -10,52 +10,74 @@
 
     <meta
         name="description"
-        content="Die Schülerzeitung des Bergischen Weiterbildungskollegs"
+        content="BWBK Aktuell – die Schülerzeitung des Bergischen Weiterbildungskollegs"
     >
 
-    <meta name="theme-color" content="#15171c">
+    <meta name="theme-color" content="#0f172a">
 
-    <title>BWBK Schülerzeitung</title>
+    <title>BWBK Aktuell</title>
 
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 
-<link
-    rel="icon"
-    type="image/png"
-    href="assets/icons/favicon.png"
->
+    <link
+        rel="apple-touch-icon"
+        href="assets/icons/icon-192.png"
+    >
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/icons/favicon.png"
+    >
 
     <script src="app.js" defer></script>
 </head>
 
 <body>
+    <nav class="main-navigation">
+        <div class="navigation-content">
+            <a class="brand" href="#top">
+                BWBK Aktuell
+            </a>
 
-<header class="hero">
-    <img
-        class="hero-image"
-        src="assets/images/header.jpg"
-        alt="Gebäude und Logo des Bergischen Weiterbildungskollegs"
-    >
+            <div class="navigation-links">
+                <a href="#ausgaben">Ausgaben</a>
+                <a href="#redaktion">Redaktion</a>
+                <a href="#bilder">Bildergalerie</a>
+                <a href="#mitmachen">Mitmachen</a>
+                <a href="#kontakt">Kontakt</a>
+            </div>
+        </div>
+    </nav>
 
-    <div class="hero-overlay"></div>
+    <header class="hero" id="top">
+        <img
+            class="hero-image"
+            src="assets/images/header.jpg"
+            alt="Gebäude und Logo des Bergischen Weiterbildungskollegs"
+        >
 
-    <div class="hero-content">
-        <p class="school-name">
-            Bergisches Weiterbildungskolleg
-        </p>
+        <div class="hero-overlay"></div>
 
-        <h1>Schülerzeitung</h1>
+        <div class="hero-content">
+            <p class="school-name">
+                Bergisches Weiterbildungskolleg
+            </p>
 
-        <p class="intro">
-            Neuigkeiten. Geschichten. Perspektiven.
-        </p>
-    </div>
-</header>
+            <h1>BWBK Aktuell</h1>
+
+            <p class="intro">
+                Neuigkeiten. Geschichten. Perspektiven.
+            </p>
+        </div>
+    </header>
 
     <main>
-        <section class="section current-section">
+        <section
+            class="section current-section"
+            id="ausgaben"
+        >
             <div class="section-heading">
                 <p class="eyebrow">Neu erschienen</p>
                 <h2>Aktuelle Ausgabe</h2>
@@ -74,11 +96,87 @@
                 <h2>Archiv</h2>
             </div>
 
-            <div id="archive" class="archive-grid"></div>
+            <div
+                id="archive"
+                class="archive-grid"
+            ></div>
+        </section>
+
+        <section
+            class="section information-section"
+            id="redaktion"
+        >
+            <div class="section-heading">
+                <p class="eyebrow">Wer wir sind</p>
+                <h2>Redaktion</h2>
+            </div>
+
+            <div class="information-card">
+                <p>
+                    Unsere Redaktion befindet sich noch im Aufbau.
+                    Nach dem Projektstart stellen wir hier das Team vor.
+                </p>
+            </div>
+        </section>
+
+        <section
+            class="section information-section"
+            id="bilder"
+        >
+            <div class="section-heading">
+                <p class="eyebrow">Schulleben in Bildern</p>
+                <h2>Bildergalerie</h2>
+            </div>
+
+            <div class="information-card">
+                <p>
+                    Hier können später Bilder aus Projekten,
+                    Aktionen und dem Schulalltag gezeigt werden.
+                </p>
+            </div>
+        </section>
+
+        <section
+            class="section information-section"
+            id="mitmachen"
+        >
+            <div class="section-heading">
+                <p class="eyebrow">Deine Ideen zählen</p>
+                <h2>Mitmachen</h2>
+            </div>
+
+            <div class="information-card">
+                <p>
+                    Du möchtest schreiben, fotografieren,
+                    gestalten oder eigene Ideen einbringen?
+                    Dann werde Teil von BWBK Aktuell.
+                </p>
+            </div>
+        </section>
+
+        <section
+            class="section information-section"
+            id="kontakt"
+        >
+            <div class="section-heading">
+                <p class="eyebrow">Melde dich bei uns</p>
+                <h2>Kontakt</h2>
+            </div>
+
+            <div class="information-card">
+                <p>
+                    Die offiziellen Kontaktdaten der Redaktion
+                    werden nach dem Projektstart ergänzt.
+                </p>
+            </div>
         </section>
     </main>
 
     <footer class="site-footer">
+        <p>
+            BWBK Aktuell
+        </p>
+
         <p>
             Schülerzeitung des Bergischen Weiterbildungskollegs
         </p>
