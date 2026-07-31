@@ -1,10 +1,10 @@
 [
     {
         "number": 1,
-        "title": "Unsere erste Ausgabe",
+        "title": "Signierstunde im Thalia",
         "publishedAt": "2026-07-31",
-        "description": "Die erste Ausgabe der Schülerzeitung des Bergischen Weiterbildungskollegs.",
-        "cover": "https://placehold.co/900x1200/202229/ffffff?text=BWBK%0ASchuelerzeitung",
-        "pdf": "pdf/erste-ausgabe.pdf"
+        "description": "Unsere erste Ausgabe der BWBK-Schülerzeitung.",
+        "cover": "assets/covers/signierstunde-im-thalia.jpg",
+        "pdf": "assets/pdf/signierstunde-im-thalia.pdf"
     }
 ]
