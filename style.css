@@ -1,23 +1,24 @@
 :root {
     --background: #f3f4f6;
     --surface: #ffffff;
-    --text: #1f2937;
-    --text-light: #6b7280;
+    --text: #242424;
+    --text-light: #6d6d6d;
 
-    --accent: #173b73;
-    --accent-hover: #102b55;
+    --accent: #7c2d38;
+    --accent-hover: #5f202a;
 
-    --navigation: #0f172a;
-    --navigation-light: #14213d;
+    --navigation-top: #3a3a3a;
+    --navigation-middle: #2d2d2d;
+    --navigation-bottom: #202020;
 
-    --border: #dfe3e8;
-    --shadow: 0 18px 50px rgba(15, 23, 42, 0.12);
+    --border: #dedede;
+    --shadow: 0 18px 50px rgba(0, 0, 0, 0.12);
 
     --radius-large: 28px;
     --radius-medium: 18px;
 
     --content-width: 1100px;
-    --navigation-height: 56px;
+    --navigation-height: 54px;
 }
 
 /* RESET */
@@ -63,15 +64,16 @@ a {
     background:
         linear-gradient(
             180deg,
-            rgba(20, 33, 61, 0.98),
-            rgba(15, 23, 42, 0.98)
+            var(--navigation-top) 0%,
+            var(--navigation-middle) 48%,
+            var(--navigation-bottom) 100%
         );
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.24);
 
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 .navigation-content {
@@ -87,17 +89,15 @@ a {
 .brand {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 
     text-decoration: none;
-
-    flex-shrink: 0;
 }
 
 .brand-logo {
     display: block;
-
-    height: 36px;
     width: auto;
+    height: 34px;
 
     object-fit: contain;
 }
@@ -111,17 +111,20 @@ a {
     position: relative;
 
     min-height: var(--navigation-height);
-    padding: 0 18px;
+    padding: 0 17px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(255, 255, 255, 0.84);
 
-    font-size: 0.9rem;
-    font-weight: 750;
+    font-family: Garamond, Georgia, "Times New Roman", serif;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
     line-height: 1;
+
     text-decoration: none;
 
     transition:
@@ -130,24 +133,24 @@ a {
 }
 
 .navigation-links a + a {
-    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .navigation-links a:hover,
 .navigation-links a:focus-visible {
     color: white;
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .navigation-links a::after {
     content: "";
 
     position: absolute;
-    right: 18px;
-    bottom: 8px;
-    left: 18px;
+    right: 17px;
+    bottom: 7px;
+    left: 17px;
 
-    height: 2px;
+    height: 1px;
 
     background: transparent;
     border-radius: 999px;
@@ -157,7 +160,7 @@ a {
 
 .navigation-links a:hover::after,
 .navigation-links a:focus-visible::after {
-    background: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.78);
 }
 
 /* HERO */
@@ -171,7 +174,7 @@ a {
     display: flex;
     align-items: flex-end;
 
-    background: var(--navigation);
+    background: #202020;
 }
 
 .hero-image {
@@ -192,9 +195,9 @@ a {
     background:
         linear-gradient(
             to top,
-            rgba(4, 12, 28, 0.88) 0%,
-            rgba(4, 12, 28, 0.5) 42%,
-            rgba(4, 12, 28, 0.12) 100%
+            rgba(0, 0, 0, 0.86) 0%,
+            rgba(0, 0, 0, 0.46) 42%,
+            rgba(0, 0, 0, 0.1) 100%
         );
 }
 
@@ -215,7 +218,7 @@ a {
     color: rgba(255, 255, 255, 0.76);
 
     font-size: 0.82rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
 }
@@ -223,11 +226,11 @@ a {
 .hero h1 {
     margin: 0;
 
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: Garamond, Georgia, "Times New Roman", serif;
     font-size: clamp(3rem, 8vw, 6.2rem);
-    font-weight: 500;
+    font-weight: 400;
     line-height: 0.95;
-    letter-spacing: -0.055em;
+    letter-spacing: -0.045em;
 }
 
 .intro {
@@ -273,10 +276,10 @@ a {
 .section-heading h2 {
     margin: 0;
 
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: Garamond, Georgia, "Times New Roman", serif;
     font-size: clamp(2.2rem, 6vw, 4rem);
-    font-weight: 500;
-    letter-spacing: -0.04em;
+    font-weight: 400;
+    letter-spacing: -0.03em;
 }
 
 /* CURRENT ISSUE */
@@ -298,7 +301,7 @@ a {
     aspect-ratio: 3 / 4;
     overflow: hidden;
 
-    background: #e5e7eb;
+    background: #e5e5e5;
     border-radius: var(--radius-medium);
 }
 
@@ -330,11 +333,11 @@ a {
 .issue-title {
     margin: 0;
 
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: Garamond, Georgia, "Times New Roman", serif;
     font-size: clamp(2.2rem, 6vw, 4.6rem);
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.035em;
 }
 
 .issue-date {
@@ -360,7 +363,7 @@ a {
     align-items: center;
     justify-content: center;
 
-    font-weight: 800;
+    font-weight: 700;
     text-decoration: none;
 
     border-radius: 14px;
@@ -412,7 +415,7 @@ a {
     aspect-ratio: 3 / 4;
     overflow: hidden;
 
-    background: #e5e7eb;
+    background: #e5e5e5;
 }
 
 .archive-cover img {
@@ -435,9 +438,9 @@ a {
 .archive-content h3 {
     margin: 0;
 
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: Garamond, Georgia, "Times New Roman", serif;
     font-size: 1.55rem;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .archive-content p {
@@ -473,7 +476,7 @@ a {
 
     border: 1px solid var(--border);
     border-radius: var(--radius-medium);
-    box-shadow: 0 12px 34px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.06);
 }
 
 .information-card p {
@@ -505,8 +508,13 @@ a {
 .site-footer {
     padding: 44px 24px;
 
-    color: rgba(255, 255, 255, 0.62);
-    background: var(--navigation);
+    color: rgba(255, 255, 255, 0.64);
+    background:
+        linear-gradient(
+            180deg,
+            var(--navigation-middle),
+            var(--navigation-bottom)
+        );
 
     text-align: center;
 }
@@ -518,7 +526,7 @@ a {
 /* ANCHOR OFFSET */
 
 section {
-    scroll-margin-top: 90px;
+    scroll-margin-top: 88px;
 }
 
 /* TABLET */
@@ -533,13 +541,13 @@ section {
     }
 
     .brand {
-        padding: 11px 16px 10px;
-        text-align: center;
+        justify-content: center;
+        padding: 9px 16px 8px;
     }
 
     .brand-logo {
-    height: 28px;
-}
+        height: 28px;
+    }
 
     .navigation-links {
         width: 100%;
@@ -547,7 +555,7 @@ section {
         overflow-x: auto;
         white-space: nowrap;
 
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
 
         scrollbar-width: none;
     }
@@ -557,20 +565,20 @@ section {
     }
 
     .navigation-links a {
-        min-height: 42px;
-        padding: 0 16px;
+        min-height: 40px;
+        padding: 0 15px;
 
-        font-size: 0.84rem;
+        font-size: 0.92rem;
     }
 
     .navigation-links a::after {
-        right: 16px;
-        bottom: 6px;
-        left: 16px;
+        right: 15px;
+        bottom: 5px;
+        left: 15px;
     }
 
     section {
-        scroll-margin-top: 110px;
+        scroll-margin-top: 104px;
     }
 }
 
@@ -644,7 +652,7 @@ section {
     .hero h1 {
         font-size: clamp(2.5rem, 13vw, 3.8rem);
         line-height: 1;
-        letter-spacing: -0.045em;
+        letter-spacing: -0.035em;
     }
 
     .intro {
@@ -679,6 +687,6 @@ section {
     }
 
     section {
-        scroll-margin-top: 112px;
+        scroll-margin-top: 106px;
     }
 }
