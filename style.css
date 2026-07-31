@@ -85,16 +85,21 @@ a {
 }
 
 .brand {
-    flex-shrink: 0;
-
-    color: white;
-
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 1.08rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
 
     text-decoration: none;
+
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    display: block;
+
+    height: 36px;
+    width: auto;
+
+    object-fit: contain;
 }
 
 .navigation-links {
@@ -531,6 +536,10 @@ section {
         padding: 11px 16px 10px;
         text-align: center;
     }
+
+    .brand-logo {
+    height: 28px;
+}
 
     .navigation-links {
         width: 100%;
