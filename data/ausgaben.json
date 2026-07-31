@@ -5,6 +5,6 @@
         "publishedAt": "2026-07-31",
         "description": "Unsere erste Ausgabe der BWBK-Schülerzeitung.",
         "cover": "assets/covers/cover1.jpg",
-        "pdf": "./assets/pdfs/ausgabe1.pdf"
+        "pdf": "./assets/pdf/ausgabe1.pdf"
     }
 ]
