@@ -1,10 +1,18 @@
 [
-    {
-        "number": 1,
-        "title": "Signierstunde im Thalia",
-        "publishedAt": "2026-07-31",
-        "description": "Unsere erste Ausgabe der BWBK-Schülerzeitung.",
-        "cover": "assets/covers/cover1.jpg",
-        "pdf": "./assets/pdf/ausgabe1.pdf"
-    }
+  {
+    "number": 2,
+    "title": "Test-Sommerausgabe",
+    "publishedAt": "2026-08-01",
+    "cover": "assets/covers/cover2.jpg",
+    "pdf": "assets/pdf/ausgabe2.pdf",
+    "description": "Testausgabe Sommerferien BWBK"
+  },
+  {
+    "number": 1,
+    "title": "Signierstunde im Thalia",
+    "publishedAt": "2026-07-31",
+    "description": "Unsere erste Ausgabe der BWBK-Schülerzeitung.",
+    "cover": "assets/covers/cover1.jpg",
+    "pdf": "./assets/pdf/ausgabe1.pdf"
+  }
 ]
