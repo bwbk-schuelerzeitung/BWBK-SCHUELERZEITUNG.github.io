@@ -19,12 +19,12 @@ on:
         type: string
 
       pdf_filename:
-        description: "PDF-Dateiname, z. B. ausgabe2.pdf"
+        description: "PDF-Dateiname, z. B. ausgabe2 oder ausgabe2.pdf"
         required: true
         type: string
 
       cover_filename:
-        description: "Cover-Dateiname, z. B. cover2.jpg"
+        description: "Cover-Dateiname, z. B. cover2 oder cover2.jpg"
         required: true
         type: string
 
@@ -47,22 +47,46 @@ jobs:
           DESCRIPTION: ${{ inputs.description }}
           PDF_FILENAME: ${{ inputs.pdf_filename }}
           COVER_FILENAME: ${{ inputs.cover_filename }}
+
         run: |
           python3 <<'PYTHON'
           import json
           import os
-          import re
           import sys
+
           from datetime import date
           from pathlib import Path
 
-          data_file = Path("data/ausgaben.json")
+
+          DATA_FILE = Path("data/ausgaben.json")
+          PDF_DIRECTORY = Path("assets/pdf")
+          COVER_DIRECTORY = Path("assets/covers")
+
+          ALLOWED_COVER_EXTENSIONS = {
+              ".jpg",
+              ".jpeg",
+              ".png",
+              ".webp"
+          }
+
+
+          def find_case_insensitive(directory, filename):
+              expected_name = filename.lower()
+
+              for file in directory.iterdir():
+                  if file.is_file() and file.name.lower() == expected_name:
+                      return file
+
+              return None
+
 
           title = os.environ["TITLE"].strip()
           description = os.environ["DESCRIPTION"].strip()
           published_at = os.environ["PUBLISHED_AT"].strip()
+
           pdf_filename = os.environ["PDF_FILENAME"].strip()
           cover_filename = os.environ["COVER_FILENAME"].strip()
+
 
           if not title:
               sys.exit("Der Titel darf nicht leer sein.")
@@ -73,57 +97,124 @@ jobs:
           try:
               date.fromisoformat(published_at)
           except ValueError:
-              sys.exit("Das Datum muss im Format JJJJ-MM-TT angegeben werden.")
+              sys.exit(
+                  "Das Datum muss im Format JJJJ-MM-TT angegeben werden."
+              )
+
 
           if Path(pdf_filename).name != pdf_filename:
-              sys.exit("Beim PDF-Dateinamen darf kein Ordnerpfad stehen.")
+              sys.exit(
+                  "Beim PDF-Dateinamen darf kein Ordnerpfad stehen."
+              )
 
           if Path(cover_filename).name != cover_filename:
-              sys.exit("Beim Cover-Dateinamen darf kein Ordnerpfad stehen.")
+              sys.exit(
+                  "Beim Cover-Dateinamen darf kein Ordnerpfad stehen."
+              )
 
+
+          # PDF-Endung automatisch ergänzen
           if not pdf_filename.lower().endswith(".pdf"):
-              sys.exit("Die Ausgabedatei muss auf .pdf enden.")
+              pdf_filename += ".pdf"
 
-          if not re.search(
-              r"\.(png|jpg|jpeg|webp)$",
-              cover_filename,
-              re.IGNORECASE
-          ):
-              sys.exit("Das Cover muss PNG, JPG, JPEG oder WebP sein.")
 
-          pdf_path = Path("assets/pdf") / pdf_filename
-          cover_path = Path("assets/covers") / cover_filename
+          pdf_path = find_case_insensitive(
+              PDF_DIRECTORY,
+              pdf_filename
+          )
 
-          if not pdf_path.is_file():
-              sys.exit(f"PDF nicht gefunden: {pdf_path}")
+          if pdf_path is None:
+              sys.exit(
+                  f"PDF nicht gefunden: "
+                  f"{PDF_DIRECTORY / pdf_filename}"
+              )
 
-          if not cover_path.is_file():
-              sys.exit(f"Cover nicht gefunden: {cover_path}")
 
-          if not data_file.is_file():
-              sys.exit(f"JSON-Datei nicht gefunden: {data_file}")
+          # Cover suchen – auch ohne angegebene Dateiendung
+          cover_suffix = Path(cover_filename).suffix.lower()
 
-          with data_file.open("r", encoding="utf-8") as file:
+          if cover_suffix:
+              if cover_suffix not in ALLOWED_COVER_EXTENSIONS:
+                  sys.exit(
+                      "Das Cover muss JPG, JPEG, PNG oder WebP sein."
+                  )
+
+              cover_path = find_case_insensitive(
+                  COVER_DIRECTORY,
+                  cover_filename
+              )
+
+          else:
+              matches = []
+
+              for extension in ALLOWED_COVER_EXTENSIONS:
+                  possible_name = cover_filename + extension
+
+                  match = find_case_insensitive(
+                      COVER_DIRECTORY,
+                      possible_name
+                  )
+
+                  if match is not None:
+                      matches.append(match)
+
+              if len(matches) == 0:
+                  sys.exit(
+                      f"Cover nicht gefunden: "
+                      f"{COVER_DIRECTORY / cover_filename}"
+                  )
+
+              if len(matches) > 1:
+                  sys.exit(
+                      "Mehrere passende Cover wurden gefunden. "
+                      "Bitte die Dateiendung im Formular angeben."
+                  )
+
+              cover_path = matches[0]
+
+
+          if not DATA_FILE.is_file():
+              sys.exit(
+                  f"JSON-Datei nicht gefunden: {DATA_FILE}"
+              )
+
+
+          with DATA_FILE.open("r", encoding="utf-8") as file:
               issues = json.load(file)
 
+
           if not isinstance(issues, list):
-              sys.exit("data/ausgaben.json muss eine JSON-Liste enthalten.")
+              sys.exit(
+                  "data/ausgaben.json muss eine JSON-Liste enthalten."
+              )
+
 
           pdf_url = pdf_path.as_posix()
           cover_url = cover_path.as_posix()
 
-          if any(issue.get("pdf") == pdf_url for issue in issues):
-              sys.exit("Diese PDF wurde bereits veröffentlicht.")
+
+          if any(
+              issue.get("pdf", "").lower() == pdf_url.lower()
+              for issue in issues
+          ):
+              sys.exit(
+                  "Diese PDF wurde bereits veröffentlicht."
+              )
+
 
           numbers = []
 
           for issue in issues:
               try:
-                  numbers.append(int(issue.get("number", 0)))
+                  numbers.append(
+                      int(issue.get("number", 0))
+                  )
               except (TypeError, ValueError):
                   pass
 
+
           next_number = max(numbers, default=0) + 1
+
 
           new_issue = {
               "number": next_number,
@@ -134,21 +225,28 @@ jobs:
               "description": description
           }
 
+
           issues.append(new_issue)
 
           issues.sort(
-              key=lambda issue: issue.get("publishedAt", ""),
+              key=lambda issue: issue.get(
+                  "publishedAt",
+                  ""
+              ),
               reverse=True
           )
 
-          with data_file.open("w", encoding="utf-8") as file:
+
+          with DATA_FILE.open("w", encoding="utf-8") as file:
               json.dump(
                   issues,
                   file,
                   ensure_ascii=False,
                   indent=2
               )
+
               file.write("\n")
+
 
           print(f"Ausgabe {next_number} wurde eingetragen.")
           print(f"PDF: {pdf_url}")
@@ -158,7 +256,8 @@ jobs:
       - name: Änderung speichern
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add data/ausgaben.json
 
@@ -173,6 +272,7 @@ jobs:
       - name: GitHub Pages neu bauen
         env:
           GH_TOKEN: ${{ github.token }}
+
         run: |
           gh api \
             --method POST \
