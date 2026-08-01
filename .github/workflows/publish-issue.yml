@@ -1,0 +1,158 @@
+name: Neue Ausgabe veröffentlichen
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Titel der Ausgabe"
+        required: true
+        type: string
+
+      published_at:
+        description: "Veröffentlichungsdatum, z. B. 2026-08-01"
+        required: true
+        type: string
+
+      description:
+        description: "Kurze Beschreibung"
+        required: true
+        type: string
+
+      pdf_filename:
+        description: "PDF-Dateiname, z. B. ausgabe2.pdf"
+        required: true
+        type: string
+
+      cover_filename:
+        description: "Cover-Dateiname, z. B. cover2.jpg"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  publish-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository laden
+        uses: actions/checkout@v6
+
+      - name: Dateien und Eingaben prüfen
+        env:
+          TITLE: ${{ inputs.title }}
+          PUBLISHED_AT: ${{ inputs.published_at }}
+          DESCRIPTION: ${{ inputs.description }}
+          PDF_FILENAME: ${{ inputs.pdf_filename }}
+          COVER_FILENAME: ${{ inputs.cover_filename }}
+        run: |
+          python3 <<'PYTHON'
+          import json
+          import os
+          import re
+          import sys
+          from datetime import date
+          from pathlib import Path
+
+          data_file = Path("data/ausgaben.json")
+          pdf_filename = os.environ["PDF_FILENAME"].strip()
+          cover_filename = os.environ["COVER_FILENAME"].strip()
+          published_at = os.environ["PUBLISHED_AT"].strip()
+
+          if Path(pdf_filename).name != pdf_filename:
+              sys.exit("Der PDF-Dateiname darf keinen Ordnerpfad enthalten.")
+
+          if Path(cover_filename).name != cover_filename:
+              sys.exit("Der Cover-Dateiname darf keinen Ordnerpfad enthalten.")
+
+          if not pdf_filename.lower().endswith(".pdf"):
+              sys.exit("Die Ausgabedatei muss eine PDF sein.")
+
+          if not re.search(r"\.(png|jpe?g|webp)$", cover_filename, re.IGNORECASE):
+              sys.exit("Das Cover muss PNG, JPG, JPEG oder WebP sein.")
+
+          try:
+              date.fromisoformat(published_at)
+          except ValueError:
+              sys.exit("Das Datum muss im Format JJJJ-MM-TT angegeben werden.")
+
+          pdf_path = Path("assets/pdf") / pdf_filename
+          cover_path = Path("assets/covers") / cover_filename
+
+          if not pdf_path.is_file():
+              sys.exit(f"PDF nicht gefunden: {pdf_path}")
+
+          if not cover_path.is_file():
+              sys.exit(f"Cover nicht gefunden: {cover_path}")
+
+          if not data_file.is_file():
+              sys.exit(f"Datendatei nicht gefunden: {data_file}")
+
+          with data_file.open("r", encoding="utf-8") as file:
+              issues = json.load(file)
+
+          if not isinstance(issues, list):
+              sys.exit("data/ausgaben.json muss eine JSON-Liste enthalten.")
+
+          pdf_url = pdf_path.as_posix()
+          cover_url = cover_path.as_posix()
+
+          if any(issue.get("pdf") == pdf_url for issue in issues):
+              sys.exit("Diese PDF ist bereits in ausgaben.json eingetragen.")
+
+          next_number = max(
+              (int(issue.get("number", 0)) for issue in issues),
+              default=0
+          ) + 1
+
+          new_issue = {
+              "number": next_number,
+              "title": os.environ["TITLE"].strip(),
+              "publishedAt": published_at,
+              "cover": cover_url,
+              "pdf": pdf_url,
+              "description": os.environ["DESCRIPTION"].strip()
+          }
+
+          issues.append(new_issue)
+          issues.sort(
+              key=lambda issue: issue.get("publishedAt", ""),
+              reverse=True
+          )
+
+          with data_file.open("w", encoding="utf-8") as file:
+              json.dump(
+                  issues,
+                  file,
+                  ensure_ascii=False,
+                  indent=2
+              )
+              file.write("\n")
+
+          print(f"Ausgabe {next_number} wurde vorbereitet.")
+          PYTHON
+
+      - name: Neue Ausgabe speichern
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/ausgaben.json
+
+          if git diff --cached --quiet; then
+            echo "Keine Änderung vorhanden."
+            exit 0
+          fi
+
+          git commit -m "Publish new newspaper issue"
+          git push
+
+      - name: GitHub Pages aktualisieren
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api \
+            --method POST \
+            "repos/${{ github.repository }}/pages/builds"
