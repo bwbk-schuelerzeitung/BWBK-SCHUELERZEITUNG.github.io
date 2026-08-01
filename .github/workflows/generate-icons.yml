@@ -15,24 +15,28 @@ jobs:
 
     steps:
       - name: Repository laden
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: ImageMagick installieren
         run: |
           sudo apt-get update
           sudo apt-get install -y imagemagick
 
+      - name: ImageMagick prüfen
+        run: |
+          convert -version
+
       - name: Icons erzeugen
         run: |
-          magick assets/icons/icon-1024.png \
+          convert assets/icons/icon-1024.png \
             -resize 512x512 \
             assets/icons/icon-512.png
 
-          magick assets/icons/icon-1024.png \
+          convert assets/icons/icon-1024.png \
             -resize 192x192 \
             assets/icons/icon-192.png
 
-          magick assets/icons/icon-1024.png \
+          convert assets/icons/icon-1024.png \
             -resize 64x64 \
             assets/icons/favicon.png
 
@@ -45,7 +49,10 @@ jobs:
           git add assets/icons/icon-192.png
           git add assets/icons/favicon.png
 
-          git diff --cached --quiet && exit 0
+          if git diff --cached --quiet; then
+            echo "Keine Änderungen vorhanden."
+            exit 0
+          fi
 
           git commit -m "Generate app icon sizes"
           git push
