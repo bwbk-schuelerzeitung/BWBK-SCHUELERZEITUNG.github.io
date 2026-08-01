@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "number": 1,
+    "title": "Pilotausgabe",
+    "publishedAt": "2026-08-01",
+    "cover": "assets/covers/37C298C7-5621-4D5C-BD52-54BBD2A43579.png",
+    "pdf": "assets/pdf/Ausgabe 01.pdf",
+    "description": "Pilotprojekt Schülerzeitung"
+  }
+]
