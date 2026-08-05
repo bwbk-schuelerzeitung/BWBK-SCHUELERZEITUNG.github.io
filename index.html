@@ -33,6 +33,15 @@
 
     <script src="app.js?v=2" defer></script>
 <script src="assets/js/views.js?v=1" defer></script>
+<script
+    src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+    defer
+></script>
+
+<script
+    src="assets/js/push.js?v=1"
+    defer
+></script>
 </head>
 
 <body>
@@ -158,13 +167,31 @@
                 <h2>Mitmachen</h2>
             </div>
 
-            <div class="information-card">
-                <p>
-                    Du möchtest schreiben, fotografieren,
-                    gestalten oder eigene Ideen einbringen?
-                    Dann werde Teil von BWBK Aktuell.
-                </p>
-            </div>
+           <div class="information-card">
+    <p>
+        Du möchtest schreiben, fotografieren,
+        gestalten oder eigene Ideen einbringen?
+        Dann werde Teil von BWBK Aktuell.
+    </p>
+
+    <div class="push-settings">
+        <button
+            id="enable-push-button"
+            class="push-button"
+            type="button"
+        >
+            Benachrichtigungen aktivieren
+        </button>
+
+        <p
+            id="push-status"
+            class="push-status"
+            aria-live="polite"
+        >
+            Erhalte eine kurze Nachricht bei einer neuen Ausgabe.
+        </p>
+    </div>
+</div>
         </section>
 
         <section
@@ -193,7 +220,7 @@
         </p>
 
         <p>
-            Keine Kommentare · Kein Tracking · Keine Werbung
+            Keine Kommentare · Keine Cookies · Keine Werbung
         </p>
     </footer>
 </body>
