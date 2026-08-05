@@ -48,6 +48,14 @@ async function loadIssues() {
             sortedIssues.slice(1),
             archiveContainer
         );
+
+        /*
+         * Meldet views.js, dass alle dynamischen
+         * Ausgaben jetzt im HTML vorhanden sind.
+         */
+        document.dispatchEvent(
+            new CustomEvent("issuesRendered")
+        );
     } catch (error) {
         console.error(error);
 
@@ -62,6 +70,10 @@ async function loadIssues() {
 }
 
 function renderCurrentIssue(issue, container) {
+    const issueNumber = escapeHtml(
+        String(issue.number)
+    );
+
     container.innerHTML = `
         <article class="current-card">
             <div class="cover-wrapper">
@@ -74,7 +86,7 @@ function renderCurrentIssue(issue, container) {
 
             <div class="issue-content">
                 <p class="issue-number">
-                    Ausgabe ${escapeHtml(String(issue.number))}
+                    Ausgabe ${issueNumber}
                 </p>
 
                 <h3 class="issue-title">
@@ -85,6 +97,12 @@ function renderCurrentIssue(issue, container) {
                     ${formatDate(issue.publishedAt)}
                 </p>
 
+                <p
+                    class="issue-views"
+                    data-view-count="${issueNumber}"
+                    hidden
+                ></p>
+
                 <p class="issue-description">
                     ${escapeHtml(issue.description)}
                 </p>
@@ -92,6 +110,7 @@ function renderCurrentIssue(issue, container) {
                 <a
                     class="primary-button"
                     href="${createReaderUrl(issue)}"
+                    data-count-view="${issueNumber}"
                 >
                     Ausgabe lesen
                 </a>
@@ -112,8 +131,12 @@ function renderArchive(issues, container) {
     }
 
     container.innerHTML = issues
-        .map(
-            (issue) => `
+        .map((issue) => {
+            const issueNumber = escapeHtml(
+                String(issue.number)
+            );
+
+            return `
                 <article class="archive-card">
                     <div class="archive-cover">
                         <img
@@ -129,20 +152,27 @@ function renderArchive(issues, container) {
                         </h3>
 
                         <p>
-                            Ausgabe ${escapeHtml(String(issue.number))}
+                            Ausgabe ${issueNumber}
                             · ${formatDate(issue.publishedAt)}
                         </p>
+
+                        <p
+                            class="archive-views"
+                            data-view-count="${issueNumber}"
+                            hidden
+                        ></p>
 
                         <a
                             class="archive-button"
                             href="${createReaderUrl(issue)}"
+                            data-count-view="${issueNumber}"
                         >
                             Ausgabe öffnen →
                         </a>
                     </div>
                 </article>
-            `
-        )
+            `;
+        })
         .join("");
 }
 

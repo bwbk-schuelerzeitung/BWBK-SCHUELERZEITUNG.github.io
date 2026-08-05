@@ -709,3 +709,35 @@ section {
         scroll-margin-top: 106px;
     }
 }
+
+/* ISSUE VIEW COUNTER */
+
+.issue-views,
+.archive-views {
+    color: var(--text-light);
+
+    font-family:
+        Garamond,
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.issue-views {
+    margin: 10px 0 0;
+    font-size: 0.92rem;
+}
+
+.archive-views {
+    margin: 8px 0 0;
+    font-size: 0.86rem;
+}
+
+.issue-views::before,
+.archive-views::before {
+    content: "◉ ";
+    opacity: 0.65;
+}
