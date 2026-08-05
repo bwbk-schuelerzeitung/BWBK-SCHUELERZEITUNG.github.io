@@ -20,8 +20,10 @@ jobs:
             --data '{
               "app_id": "264f05a0-58fc-4611-9f11-189078fac630",
               "target_channel": "push",
-              "include_subscription_ids": [
-                "826941b8-4c77-4c1e-b062-c1251e55aa27"
+              "included_segments": [
+                "Total Subscriptions"
+                ]
+               
               ],
               "headings": {
                 "de": "BWBK Aktuell",
