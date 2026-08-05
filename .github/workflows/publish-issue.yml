@@ -266,23 +266,32 @@ jobs:
 
       - name: Push-Benachrichtigung senden
         env:
-          ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
-        run: |
-          curl --fail-with-body \
-            --request POST \
-            --url "https://api.onesignal.com/notifications" \
-            --header "Authorization: Key ${ONESIGNAL_API_KEY}" \
-            --header "Content-Type: application/json" \
-            --data '{
-              "app_id": "264f05a0-58fc-4611-9f11-189078fac630",
-              "included_segments": ["Subscribed Users"],
-              "headings": {
-                "de": "BWBK Aktuell",
-                "en": "BWBK Aktuell"
-              },
-              "contents": {
-                "de": "Neue Schülerzeitung verfügbar 📰",
-                "en": "Neue Schülerzeitung verfügbar 📰"
-              },
-              "url": "https://bwbk-schuelerzeitung.github.io"
-            }'
+         ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
+
+  run: |
+    response=$(curl --silent --show-error \
+      --request POST \
+      --url "https://api.onesignal.com/notifications" \
+      --header "Authorization: Key ${ONESIGNAL_API_KEY}" \
+      --header "Content-Type: application/json" \
+      --data '{
+        "app_id": "264f05a0-58fc-4611-9f11-189078fac630",
+        "target_channel": "push",
+        "included_segments": [
+          "Alle Push-Abonnenten"
+        ],
+        "headings": {
+          "de": "BWBK Aktuell"
+        },
+        "contents": {
+          "de": "Eine neue Ausgabe ist erschienen. Jetzt lesen."
+        },
+        "url": "https://bwbk-schuelerzeitung.github.io"
+      }')
+
+    echo "$response"
+
+    if ! echo "$response" | grep -q '"id":"[^"]'; then
+      echo "Push konnte nicht versendet werden."
+      exit 1
+    fi
