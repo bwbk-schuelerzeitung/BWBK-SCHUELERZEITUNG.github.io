@@ -20,7 +20,9 @@ jobs:
             --data '{
               "app_id": "264f05a0-58fc-4611-9f11-189078fac630",
               "target_channel": "push",
-              "included_segments": ["Subscribed Users"],
+              "include_subscription_ids": [
+                "826941b8-4c77-4c1e-b062-c1251e55aa27"
+              ],
               "headings": {
                 "de": "BWBK Aktuell",
                 "en": "BWBK Aktuell"
@@ -34,3 +36,8 @@ jobs:
 
           echo "OneSignal-Antwort:"
           echo "$response"
+
+          echo "$response" | grep -q '"id":"[^"]\+"' || {
+            echo "OneSignal hat keine Nachricht erstellt."
+            exit 1
+          }
