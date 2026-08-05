@@ -1,0 +1,36 @@
+name: Test-Push senden
+
+on:
+  workflow_dispatch:
+
+jobs:
+  send-test-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Test-Push über OneSignal senden
+        env:
+          ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
+        run: |
+          response=$(curl --silent --show-error --fail-with-body \
+            --request POST \
+            --url "https://api.onesignal.com/notifications" \
+            --header "Authorization: Key ${ONESIGNAL_API_KEY}" \
+            --header "Content-Type: application/json" \
+            --data '{
+              "app_id": "264f05a0-58fc-4611-9f11-189078fac630",
+              "target_channel": "push",
+              "included_segments": ["Subscribed Users"],
+              "headings": {
+                "de": "BWBK Aktuell",
+                "en": "BWBK Aktuell"
+              },
+              "contents": {
+                "de": "Test: Neue Schülerzeitung verfügbar 📰",
+                "en": "Test: Neue Schülerzeitung verfügbar 📰"
+              },
+              "url": "https://bwbk-schuelerzeitung.github.io"
+            }')
+
+          echo "OneSignal-Antwort:"
+          echo "$response"
