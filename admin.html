@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="robots"
+        content="noindex, nofollow"
+    >
+
+    <title>Redaktion | BWBK Aktuell</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            background: #f4f4f4;
+            color: #222;
+        }
+
+        .admin-header {
+            padding: 24px;
+            text-align: center;
+            background: #ffffff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .admin-header p {
+            margin: 6px 0 0;
+            color: #666;
+        }
+
+        .admin-main {
+            width: min(600px, calc(100% - 32px));
+            margin: 40px auto;
+        }
+
+        .admin-card {
+            padding: 28px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .admin-card h2 {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input,
+        textarea {
+            display: block;
+            width: 100%;
+            padding: 11px 12px;
+            font: inherit;
+            border: 1px solid #bbb;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 8px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            background: #222;
+            color: #fff;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: wait;
+        }
+
+        .secondary-button {
+            margin-top: 12px;
+            background: #666;
+        }
+
+        .status {
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #eee;
+        }
+
+        .status.success {
+            background: #e7f6e7;
+        }
+
+        .status.error {
+            background: #fde8e8;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .admin-user {
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #ddd;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="admin-header">
+    <h1>BWBK Aktuell</h1>
+    <p>Redaktionsbereich</p>
+</header>
+
+<main class="admin-main">
+
+    <!-- LOGIN -->
+
+    <section
+        id="login-section"
+        class="admin-card hidden"
+    >
+        <h2>Anmelden</h2>
+
+        <form id="login-form">
+
+            <div class="form-group">
+                <label for="login-username">
+                    Benutzer-ID
+                </label>
+
+                <input
+                    id="login-username"
+                    name="username"
+                    type="text"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="login-password">
+                    Passwort
+                </label>
+
+                <input
+                    id="login-password"
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <button type="submit">
+                Anmelden
+            </button>
+
+        </form>
+
+        <div
+            id="login-status"
+            class="status hidden"
+        ></div>
+    </section>
+
+
+    <!-- ADMINBEREICH -->
+
+    <section
+        id="admin-section"
+        class="admin-card hidden"
+    >
+        <h2>Neue Ausgabe veröffentlichen</h2>
+
+        <div class="admin-user">
+            Angemeldet als
+            <strong id="current-user"></strong>
+        </div>
+
+        <form id="issue-form">
+
+            <div class="form-group">
+                <label for="issue-number">
+                    Ausgabennummer
+                </label>
+
+                <input
+                    id="issue-number"
+                    name="issue_number"
+                    type="number"
+                    min="1"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="issue-title">
+                    Titel
+                </label>
+
+                <input
+                    id="issue-title"
+                    name="title"
+                    type="text"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="issue-description">
+                    Beschreibung
+                </label>
+
+                <textarea
+                    id="issue-description"
+                    name="description"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="published-at">
+                    Veröffentlichungsdatum
+                </label>
+
+                <input
+                    id="published-at"
+                    name="published_at"
+                    type="date"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="issue-cover">
+                    Cover
+                </label>
+
+                <input
+                    id="issue-cover"
+                    name="cover"
+                    type="file"
+                    accept="image/*"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="issue-pdf">
+                    PDF
+                </label>
+
+                <input
+                    id="issue-pdf"
+                    name="pdf"
+                    type="file"
+                    accept="application/pdf"
+                    required
+                >
+            </div>
+
+            <button
+                id="publish-button"
+                type="submit"
+            >
+                Ausgabe veröffentlichen
+            </button>
+
+        </form>
+
+        <div
+            id="issue-status"
+            class="status hidden"
+        ></div>
+
+        <button
+            id="logout-button"
+            class="secondary-button"
+            type="button"
+        >
+            Abmelden
+        </button>
+
+    </section>
+
+
+    <!-- LADEN -->
+
+    <section
+        id="loading-section"
+        class="admin-card"
+    >
+        <p>Redaktionsbereich wird geladen …</p>
+    </section>
+
+</main>
+
+<script src="./admin.js"></script>
+
+</body>
+</html>
