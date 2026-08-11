@@ -154,6 +154,92 @@
 
 <main class="admin-main">
 
+<!-- ERSTEINRICHTUNG -->
+
+<section
+    id="setup-section"
+    class="admin-card hidden"
+>
+    <h2>Ersteinrichtung</h2>
+
+    <p>
+        Lege den ersten Zugang für den
+        Redaktionsbereich an.
+    </p>
+
+    <form id="setup-form">
+
+        <div class="form-group">
+            <label for="setup-username">
+                Benutzer-ID
+            </label>
+
+            <input
+                id="setup-username"
+                name="username"
+                type="text"
+                autocomplete="username"
+                minlength="3"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="setup-password">
+                Passwort
+            </label>
+
+            <input
+                id="setup-password"
+                name="password"
+                type="password"
+                autocomplete="new-password"
+                minlength="12"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="setup-password-repeat">
+                Passwort wiederholen
+            </label>
+
+            <input
+                id="setup-password-repeat"
+                name="password_repeat"
+                type="password"
+                autocomplete="new-password"
+                minlength="12"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="setup-token">
+                Admin-Schlüssel
+            </label>
+
+            <input
+                id="setup-token"
+                name="admin_token"
+                type="password"
+                autocomplete="off"
+                required
+            >
+        </div>
+
+        <button type="submit">
+            Admin-Zugang erstellen
+        </button>
+
+    </form>
+
+    <div
+        id="setup-status"
+        class="status hidden"
+    ></div>
+</section>
+
     <!-- LOGIN -->
 
     <section
