@@ -406,13 +406,18 @@ a {
 /* ARCHIVE */
 
 .archive-section {
-    padding-top: 40px;
+    padding-top: 32px;
 }
 
 .archive-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 280px));
+
+    justify-content: center;
+
+    gap: 18px;
 }
 
 .archive-card {
@@ -429,6 +434,8 @@ a {
 .archive-cover {
     aspect-ratio: 3 / 4;
     overflow: hidden;
+
+    max-height: 340px;
 
     background: #e5e5e5;
 }
@@ -447,27 +454,28 @@ a {
     flex-direction: column;
     align-items: flex-start;
 
-    padding: 22px;
+    padding: 16px;
 }
 
 .archive-content h3 {
     margin: 0;
 
     font-family: Garamond, Georgia, "Times New Roman", serif;
-    font-size: 1.55rem;
+    font-size: 1.3rem;
     font-weight: 400;
 }
 
 .archive-content p {
-    margin: 10px 0 0;
+    margin: 8px 0 0;
 
     color: var(--text-light);
-    line-height: 1.5;
+    line-height: 1.4;
+    font-size: 0.95rem;
 }
 
 .archive-button {
     margin-top: auto;
-    padding-top: 22px;
+    padding-top: 16px;
 
     color: var(--accent);
 }
@@ -475,6 +483,20 @@ a {
 .archive-button:hover,
 .archive-button:focus-visible {
     color: var(--accent-hover);
+}
+
+@media (max-width: 900px) {
+    .archive-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 260px));
+    }
+}
+
+@media (max-width: 600px) {
+    .archive-grid {
+        grid-template-columns:
+            minmax(0, 320px);
+    }
 }
 
 /* INFORMATION SECTIONS */
