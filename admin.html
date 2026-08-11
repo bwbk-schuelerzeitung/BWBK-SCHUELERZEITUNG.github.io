@@ -20,6 +20,17 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --background: #f5f5f5;
+            --surface: #ffffff;
+            --text: #222222;
+            --muted: #6f6f6f;
+            --border: #dddddd;
+            --danger: #a92626;
+            --success-bg: #e6f5e6;
+            --error-bg: #fde7e7;
+        }
+
         body {
             margin: 0;
             min-height: 100vh;
@@ -28,40 +39,185 @@
                 BlinkMacSystemFont,
                 "Segoe UI",
                 sans-serif;
-            background: #f4f4f4;
-            color: #222;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button,
+        input,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         .admin-header {
-            padding: 24px;
-            text-align: center;
-            background: #ffffff;
-            border-bottom: 1px solid #ddd;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
         }
 
-        .admin-header h1 {
+        .admin-header-inner {
+            width: min(1100px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 22px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand h1 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 1.75rem;
         }
 
-        .admin-header p {
-            margin: 6px 0 0;
-            color: #666;
+        .brand p {
+            margin: 4px 0 0;
+            color: var(--muted);
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-user span {
+            color: var(--muted);
         }
 
         .admin-main {
-            width: min(600px, calc(100% - 32px));
+            width: min(1100px, calc(100% - 32px));
+            margin: 32px auto 60px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+        }
+
+        .auth-card {
+            width: min(560px, 100%);
             margin: 40px auto;
+            padding: 30px;
         }
 
-        .admin-card {
+        .auth-card h2 {
+            margin-top: 0;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .toolbar h2 {
+            margin: 0;
+        }
+
+        .primary-button,
+        .secondary-button,
+        .danger-button,
+        .ghost-button {
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 16px;
+            font-weight: 700;
+        }
+
+        .primary-button {
+            background: #222;
+            color: #fff;
+        }
+
+        .secondary-button {
+            background: #707070;
+            color: #fff;
+        }
+
+        .danger-button {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .ghost-button {
+            background: #eeeeee;
+            color: #222;
+        }
+
+        .full-button {
+            width: 100%;
+        }
+
+        .issues-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .issue-card {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 90px 1fr auto;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .issue-cover {
+            width: 90px;
+            aspect-ratio: 0.7;
+            object-fit: cover;
+            border-radius: 7px;
+            background: #eeeeee;
+        }
+
+        .issue-info h3 {
+            margin: 0 0 6px;
+        }
+
+        .issue-number {
+            margin: 0 0 4px;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .issue-date {
+            margin: 0 0 10px;
+            color: var(--muted);
+        }
+
+        .issue-description {
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .issue-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 130px;
+        }
+
+        .issue-actions a {
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .form-card {
             padding: 28px;
-            background: #ffffff;
-            border-radius: 14px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
         }
 
-        .admin-card h2 {
+        .form-card h2 {
             margin-top: 0;
         }
 
@@ -71,76 +227,101 @@
 
         label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
+            margin-bottom: 7px;
+            font-weight: 700;
         }
 
         input,
         textarea {
-            display: block;
             width: 100%;
             padding: 11px 12px;
-            font: inherit;
-            border: 1px solid #bbb;
+            border: 1px solid #bbbbbb;
             border-radius: 8px;
             background: #fff;
         }
 
         textarea {
-            min-height: 100px;
+            min-height: 110px;
             resize: vertical;
         }
 
-        button {
-            width: 100%;
-            padding: 12px 18px;
-            border: 0;
-            border-radius: 8px;
-            font: inherit;
-            font-weight: 700;
-            cursor: pointer;
-            background: #222;
-            color: #fff;
+        .form-hint {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 0.9rem;
         }
 
-        button:hover {
-            opacity: 0.9;
+        .form-actions {
+            display: flex;
+            gap: 10px;
         }
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: wait;
-        }
-
-        .secondary-button {
-            margin-top: 12px;
-            background: #666;
+        .form-actions button {
+            flex: 1;
         }
 
         .status {
             margin-top: 18px;
-            padding: 12px;
-            border-radius: 8px;
-            background: #eee;
+            padding: 12px 14px;
+            border-radius: 9px;
         }
 
         .status.success {
-            background: #e7f6e7;
+            background: var(--success-bg);
         }
 
         .status.error {
-            background: #fde8e8;
+            background: var(--error-bg);
         }
 
-        .hidden {
-            display: none;
+        .empty-state {
+            padding: 30px;
+            text-align: center;
+            color: var(--muted);
         }
 
-        .admin-user {
-            margin-bottom: 24px;
-            padding-bottom: 18px;
-            border-bottom: 1px solid #ddd;
-            color: #555;
+        .loading-card {
+            padding: 25px;
+            text-align: center;
+        }
+
+        @media (max-width: 760px) {
+            .admin-header-inner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .header-user {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .issue-card {
+                grid-template-columns: 70px 1fr;
+            }
+
+            .issue-cover {
+                width: 70px;
+            }
+
+            .issue-actions {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .issue-actions > * {
+                flex: 1;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -148,103 +329,142 @@
 <body>
 
 <header class="admin-header">
-    <h1>BWBK Aktuell</h1>
-    <p>Redaktionsbereich</p>
+    <div class="admin-header-inner">
+
+        <div class="brand">
+            <h1>BWBK Aktuell</h1>
+            <p>Redaktionsbereich</p>
+        </div>
+
+        <div
+            id="header-user"
+            class="header-user hidden"
+        >
+            <span>
+                Angemeldet als
+                <strong id="current-user"></strong>
+            </span>
+
+            <button
+                id="logout-button"
+                class="secondary-button"
+                type="button"
+            >
+                Abmelden
+            </button>
+        </div>
+
+    </div>
 </header>
+
 
 <main class="admin-main">
 
-<!-- ERSTEINRICHTUNG -->
+    <!-- LADEN -->
 
-<section
-    id="setup-section"
-    class="admin-card hidden"
->
-    <h2>Ersteinrichtung</h2>
+    <section
+        id="loading-section"
+        class="card loading-card"
+    >
+        Redaktionsbereich wird geladen …
+    </section>
 
-    <p>
-        Lege den ersten Zugang für den
-        Redaktionsbereich an.
-    </p>
 
-    <form id="setup-form">
+    <!-- ERSTEINRICHTUNG -->
 
-        <div class="form-group">
-            <label for="setup-username">
-                Benutzer-ID
-            </label>
+    <section
+        id="setup-section"
+        class="card auth-card hidden"
+    >
+        <h2>Ersteinrichtung</h2>
 
-            <input
-                id="setup-username"
-                name="username"
-                type="text"
-                autocomplete="username"
-                minlength="3"
-                required
+        <p>
+            Lege den ersten Zugang für den
+            Redaktionsbereich an.
+        </p>
+
+        <form id="setup-form">
+
+            <div class="form-group">
+                <label for="setup-username">
+                    Benutzer-ID
+                </label>
+
+                <input
+                    id="setup-username"
+                    name="username"
+                    type="text"
+                    minlength="3"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="setup-password">
+                    Passwort
+                </label>
+
+                <input
+                    id="setup-password"
+                    name="password"
+                    type="password"
+                    minlength="12"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="setup-password-repeat">
+                    Passwort wiederholen
+                </label>
+
+                <input
+                    id="setup-password-repeat"
+                    name="password_repeat"
+                    type="password"
+                    minlength="12"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="setup-token">
+                    Admin-Schlüssel
+                </label>
+
+                <input
+                    id="setup-token"
+                    name="admin_token"
+                    type="password"
+                    autocomplete="off"
+                    required
+                >
+            </div>
+
+            <button
+                class="primary-button full-button"
+                type="submit"
             >
-        </div>
+                Admin-Zugang erstellen
+            </button>
 
-        <div class="form-group">
-            <label for="setup-password">
-                Passwort
-            </label>
+        </form>
 
-            <input
-                id="setup-password"
-                name="password"
-                type="password"
-                autocomplete="new-password"
-                minlength="12"
-                required
-            >
-        </div>
+        <div
+            id="setup-status"
+            class="status hidden"
+        ></div>
+    </section>
 
-        <div class="form-group">
-            <label for="setup-password-repeat">
-                Passwort wiederholen
-            </label>
-
-            <input
-                id="setup-password-repeat"
-                name="password_repeat"
-                type="password"
-                autocomplete="new-password"
-                minlength="12"
-                required
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="setup-token">
-                Admin-Schlüssel
-            </label>
-
-            <input
-                id="setup-token"
-                name="admin_token"
-                type="password"
-                autocomplete="off"
-                required
-            >
-        </div>
-
-        <button type="submit">
-            Admin-Zugang erstellen
-        </button>
-
-    </form>
-
-    <div
-        id="setup-status"
-        class="status hidden"
-    ></div>
-</section>
 
     <!-- LOGIN -->
 
     <section
         id="login-section"
-        class="admin-card hidden"
+        class="card auth-card hidden"
     >
         <h2>Anmelden</h2>
 
@@ -278,7 +498,10 @@
                 >
             </div>
 
-            <button type="submit">
+            <button
+                class="primary-button full-button"
+                type="submit"
+            >
                 Anmelden
             </button>
 
@@ -291,135 +514,167 @@
     </section>
 
 
-    <!-- ADMINBEREICH -->
+    <!-- REDAKTION -->
 
     <section
         id="admin-section"
-        class="admin-card hidden"
+        class="hidden"
     >
-        <h2>Neue Ausgabe veröffentlichen</h2>
 
-        <div class="admin-user">
-            Angemeldet als
-            <strong id="current-user"></strong>
-        </div>
+        <div class="toolbar">
 
-        <form id="issue-form">
-
-            <div class="form-group">
-                <label for="issue-number">
-                    Ausgabennummer
-                </label>
-
-                <input
-                    id="issue-number"
-                    name="issue_number"
-                    type="number"
-                    min="1"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="issue-title">
-                    Titel
-                </label>
-
-                <input
-                    id="issue-title"
-                    name="title"
-                    type="text"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="issue-description">
-                    Beschreibung
-                </label>
-
-                <textarea
-                    id="issue-description"
-                    name="description"
-                ></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="published-at">
-                    Veröffentlichungsdatum
-                </label>
-
-                <input
-                    id="published-at"
-                    name="published_at"
-                    type="date"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="issue-cover">
-                    Cover
-                </label>
-
-                <input
-                    id="issue-cover"
-                    name="cover"
-                    type="file"
-                    accept="image/*"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="issue-pdf">
-                    PDF
-                </label>
-
-                <input
-                    id="issue-pdf"
-                    name="pdf"
-                    type="file"
-                    accept="application/pdf"
-                    required
-                >
-            </div>
+            <h2>Ausgaben</h2>
 
             <button
-                id="publish-button"
-                type="submit"
+                id="new-issue-button"
+                class="primary-button"
+                type="button"
             >
-                Ausgabe veröffentlichen
+                + Neue Ausgabe
             </button>
 
-        </form>
+        </div>
 
-        <div
-            id="issue-status"
-            class="status hidden"
-        ></div>
 
-        <button
-            id="logout-button"
-            class="secondary-button"
-            type="button"
+        <!-- UPLOAD / EDITOR -->
+
+        <section
+            id="issue-editor"
+            class="card form-card hidden"
         >
-            Abmelden
-        </button>
+            <h2 id="editor-title">
+                Neue Ausgabe
+            </h2>
 
-    </section>
+            <form id="issue-form">
+
+                <div class="form-group">
+                    <label for="issue-number">
+                        Ausgabennummer
+                    </label>
+
+                    <input
+                        id="issue-number"
+                        name="issue_number"
+                        type="number"
+                        min="1"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="issue-title">
+                        Titel
+                    </label>
+
+                    <input
+                        id="issue-title"
+                        name="title"
+                        type="text"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="issue-description">
+                        Beschreibung
+                    </label>
+
+                    <textarea
+                        id="issue-description"
+                        name="description"
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="published-at">
+                        Veröffentlichungsdatum
+                    </label>
+
+                    <input
+                        id="published-at"
+                        name="published_at"
+                        type="date"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="issue-cover">
+                        Cover
+                    </label>
+
+                    <input
+                        id="issue-cover"
+                        name="cover"
+                        type="file"
+                        accept="image/*"
+                    >
+
+                    <div
+                        id="cover-hint"
+                        class="form-hint"
+                    ></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="issue-pdf">
+                        PDF
+                    </label>
+
+                    <input
+                        id="issue-pdf"
+                        name="pdf"
+                        type="file"
+                        accept="application/pdf"
+                    >
+
+                    <div
+                        id="pdf-hint"
+                        class="form-hint"
+                    ></div>
+                </div>
+
+                <div class="form-actions">
+
+                    <button
+                        id="save-issue-button"
+                        class="primary-button"
+                        type="submit"
+                    >
+                        Ausgabe veröffentlichen
+                    </button>
+
+                    <button
+                        id="cancel-edit-button"
+                        class="ghost-button"
+                        type="button"
+                    >
+                        Abbrechen
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div
+                id="issue-status"
+                class="status hidden"
+            ></div>
+        </section>
 
 
-    <!-- LADEN -->
+        <!-- AUSGABENLISTE -->
 
-    <section
-        id="loading-section"
-        class="admin-card"
-    >
-        <p>Redaktionsbereich wird geladen …</p>
+        <section
+            id="issues-list"
+            class="issues-list"
+        ></section>
+
     </section>
 
 </main>
+
 
 <script src="./admin.js"></script>
 
