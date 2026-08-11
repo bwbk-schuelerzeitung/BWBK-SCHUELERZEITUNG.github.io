@@ -1,6 +1,6 @@
 "use strict";
 
-const DATA_URL = "./data/ausgaben.json";
+const DATA_URL = "https://bwbk-api.roniiminimal.workers.dev/issues";
 
 async function loadIssues() {
     const currentContainer = document.querySelector("#current-issue");
@@ -15,7 +15,8 @@ async function loadIssues() {
             );
         }
 
-        const issues = await response.json();
+        const data = await response.json();
+        const issues = data.issues;
 
         if (!Array.isArray(issues) || issues.length === 0) {
             currentContainer.innerHTML = `
