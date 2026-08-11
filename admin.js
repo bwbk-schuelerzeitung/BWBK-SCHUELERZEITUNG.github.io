@@ -3,6 +3,7 @@
 const API_URL =
     "https://bwbk-api.roniiminimal.workers.dev";
 
+
 const loadingSection =
     document.querySelector("#loading-section");
 
@@ -12,17 +13,28 @@ const loginSection =
 const adminSection =
     document.querySelector("#admin-section");
 
+const setupSection =
+    document.querySelector("#setup-section");
+
+
 const loginForm =
     document.querySelector("#login-form");
 
 const loginStatus =
     document.querySelector("#login-status");
 
+const setupForm =
+    document.querySelector("#setup-form");
+
+const setupStatus =
+    document.querySelector("#setup-status");
+
 const issueForm =
     document.querySelector("#issue-form");
 
 const issueStatus =
     document.querySelector("#issue-status");
+
 
 const currentUser =
     document.querySelector("#current-user");
@@ -33,14 +45,31 @@ const publishButton =
 const logoutButton =
     document.querySelector("#logout-button");
 
-const setupSection =
-    document.querySelector("#setup-section");
 
-const setupForm =
-    document.querySelector("#setup-form");
+const SESSION_STORAGE_KEY =
+    "bwbk_admin_session";
 
-const setupStatus =
-    document.querySelector("#setup-status");
+
+function getSessionToken() {
+    return sessionStorage.getItem(
+        SESSION_STORAGE_KEY
+    );
+}
+
+
+function saveSessionToken(token) {
+    sessionStorage.setItem(
+        SESSION_STORAGE_KEY,
+        token
+    );
+}
+
+
+function removeSessionToken() {
+    sessionStorage.removeItem(
+        SESSION_STORAGE_KEY
+    );
+}
 
 
 function showSection(section) {
@@ -53,7 +82,11 @@ function showSection(section) {
 }
 
 
-function showStatus(element, message, type = "") {
+function showStatus(
+    element,
+    message,
+    type = ""
+) {
     element.textContent = message;
 
     element.className =
@@ -69,17 +102,30 @@ function hideStatus(element) {
 
 
 async function checkSession() {
+    const token =
+        getSessionToken();
+
+    if (!token) {
+        showSection(loginSection);
+        return;
+    }
+
     try {
         const response =
             await fetch(
                 `${API_URL}/admin/me`,
                 {
                     method: "GET",
-                    credentials: "include"
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
                 }
             );
 
         if (!response.ok) {
+            removeSessionToken();
             showSection(loginSection);
             return;
         }
@@ -132,8 +178,6 @@ loginForm.addEventListener(
                     {
                         method: "POST",
 
-                        credentials: "include",
-
                         headers: {
                             "Content-Type":
                                 "application/json"
@@ -159,6 +203,20 @@ loginForm.addEventListener(
 
                 return;
             }
+
+            if (!data.sessionToken) {
+                showStatus(
+                    loginStatus,
+                    "Der Server hat keine Sitzung erstellt.",
+                    "error"
+                );
+
+                return;
+            }
+
+            saveSessionToken(
+                data.sessionToken
+            );
 
             loginForm.reset();
 
@@ -186,6 +244,20 @@ issueForm.addEventListener(
 
         hideStatus(issueStatus);
 
+        const token =
+            getSessionToken();
+
+        if (!token) {
+            showStatus(
+                issueStatus,
+                "Du bist nicht angemeldet.",
+                "error"
+            );
+
+            showSection(loginSection);
+            return;
+        }
+
         publishButton.disabled = true;
         publishButton.textContent =
             "Wird veröffentlicht …";
@@ -200,7 +272,10 @@ issueForm.addEventListener(
                     {
                         method: "POST",
 
-                        credentials: "include",
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        },
 
                         body: formData
                     }
@@ -208,6 +283,20 @@ issueForm.addEventListener(
 
             const data =
                 await response.json();
+
+            if (response.status === 401) {
+                removeSessionToken();
+
+                showSection(loginSection);
+
+                showStatus(
+                    loginStatus,
+                    "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.",
+                    "error"
+                );
+
+                return;
+            }
 
             if (!response.ok) {
                 showStatus(
@@ -247,13 +336,24 @@ issueForm.addEventListener(
 logoutButton.addEventListener(
     "click",
     () => {
-        /*
-         * Eine richtige Logout-Route bauen wir
-         * als nächsten Schritt.
-         */
+        removeSessionToken();
+
+        currentUser.textContent = "";
+
+        issueForm.reset();
+
+        hideStatus(issueStatus);
+
         showSection(loginSection);
+
+        showStatus(
+            loginStatus,
+            "Du wurdest abgemeldet.",
+            "success"
+        );
     }
 );
+
 
 setupForm.addEventListener(
     "submit",
@@ -352,14 +452,14 @@ setupForm.addEventListener(
     }
 );
 
+
 async function initializeAdminPage() {
     try {
         const response =
             await fetch(
                 `${API_URL}/admin/setup-status`,
                 {
-                    method: "GET",
-                    credentials: "include"
+                    method: "GET"
                 }
             );
 
@@ -367,6 +467,7 @@ async function initializeAdminPage() {
             await response.json();
 
         if (data.setupRequired) {
+            removeSessionToken();
             showSection(setupSection);
             return;
         }
@@ -384,5 +485,6 @@ async function initializeAdminPage() {
         );
     }
 }
+
 
 initializeAdminPage();
