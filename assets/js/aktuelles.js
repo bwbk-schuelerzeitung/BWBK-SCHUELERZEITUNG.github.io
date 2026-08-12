@@ -179,26 +179,45 @@ function renderUpdates(
                 update => `
                     <article class="update-card">
 
-                        <p class="update-date">
-                            ${formatDate(update.date)}
-                        </p>
+                        <div class="update-card-date">
+                            <span class="update-card-day">
+                                ${formatDay(update.date)}
+                            </span>
 
-                        <h3 class="update-title">
-                            ${escapeHtml(update.title)}
-                        </h3>
+                            <span class="update-card-month">
+                                ${formatMonth(update.date)}
+                            </span>
 
-                        <p class="update-description">
-                            ${escapeHtml(
-                                update.description || ""
-                            )}
-                        </p>
+                            <span class="update-card-year">
+                                ${formatYear(update.date)}
+                            </span>
+                        </div>
+
+                        <div class="update-card-content">
+
+                            <h3 class="update-title">
+                                ${escapeHtml(update.title)}
+                            </h3>
+
+                            ${
+                                update.description
+                                    ? `
+                                        <p class="update-description">
+                                            ${escapeHtml(
+                                                update.description
+                                            )}
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                        </div>
 
                     </article>
                 `
             )
             .join("");
 }
-
 
 function renderDates(
     dates,
@@ -361,6 +380,20 @@ function formatMonth(
         .toUpperCase();
 }
 
+function formatYear(
+    dateString
+) {
+    return new Intl.DateTimeFormat(
+        "de-DE",
+        {
+            year: "numeric"
+        }
+    ).format(
+        createLocalDate(
+            dateString
+        )
+    );
+}
 
 /*
  * ==========================================

@@ -882,3 +882,189 @@ section {
     color: var(--text-light);
     font-size: 0.92rem !important;
 }
+
+/* ==========================================
+   AKTUELLES & TERMINE
+   ========================================== */
+
+.updates-category {
+    margin-top: 48px;
+}
+
+.updates-category:first-of-type {
+    margin-top: 32px;
+}
+
+.updates-category-heading {
+    margin-bottom: 20px;
+}
+
+.updates-category-description {
+    margin-top: 8px;
+    color: var(--muted);
+}
+
+
+/* Nachrichten */
+
+.updates-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.update-card {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 24px;
+    align-items: center;
+
+    padding: 22px 26px;
+
+    background: #ffffff;
+    border-radius: 16px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.update-card-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding-right: 22px;
+
+    border-right: 1px solid #e2e2e2;
+
+    text-align: center;
+}
+
+.update-card-day {
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.update-card-month {
+    margin-top: 4px;
+
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.update-card-year {
+    margin-top: 3px;
+
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+.update-card-content {
+    min-width: 0;
+}
+
+.update-title {
+    margin: 0 0 6px;
+    font-size: 1.15rem;
+}
+
+.update-description {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+
+/* Termine */
+
+.dates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.date-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 24px;
+    align-items: center;
+
+    padding: 22px 26px;
+
+    background: #ffffff;
+    border-radius: 16px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.date-calendar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding-right: 22px;
+
+    border-right: 1px solid #e2e2e2;
+}
+
+.date-day {
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.date-month {
+    margin-top: 4px;
+
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.date-content h3 {
+    margin: 0 0 6px;
+}
+
+.date-content p {
+    margin: 0;
+    color: var(--muted);
+}
+
+
+/* Mobil */
+
+@media (max-width: 600px) {
+
+    .update-card,
+    .date-row {
+        grid-template-columns: 64px 1fr;
+        gap: 16px;
+
+        padding: 18px;
+    }
+
+    .update-card-date,
+    .date-calendar {
+        padding-right: 14px;
+    }
+
+    .update-card-day,
+    .date-day {
+        font-size: 1.4rem;
+    }
+
+    .update-card-year {
+        font-size: 0.7rem;
+    }
+
+    .update-title {
+        font-size: 1rem;
+    }
+}
