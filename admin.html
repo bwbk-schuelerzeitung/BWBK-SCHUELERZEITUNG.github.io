@@ -463,9 +463,9 @@
             text-align: center;
         }
 
-        /* =====================================
-   BENUTZERVERWALTUNG
-   ===================================== */
+/* =====================================
+BENUTZERVERWALTUNG
+===================================== */
 
 .users-list {
     display: grid;
@@ -625,6 +625,149 @@
     .gallery-admin-actions {
         grid-column: 1 / -1;
     }
+}
+
+/* =====================================
+   SCHREIBTISCH
+   ===================================== */
+
+.desk-intro {
+    margin: 6px 0 0;
+
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.desk-board {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+    align-items: start;
+}
+
+.desk-column {
+    min-width: 0;
+
+    padding: 14px;
+
+    background: #ececec;
+    border-radius: 14px;
+}
+
+.desk-column-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 12px;
+}
+
+.desk-column-header h3 {
+    margin: 0;
+
+    font-size: 1rem;
+}
+
+.desk-column-icon {
+    font-size: 1rem;
+}
+
+.desk-list {
+    display: grid;
+    gap: 12px;
+}
+
+.desk-card {
+    padding: 14px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0, 0, 0, 0.05);
+}
+
+.desk-card h4 {
+    margin: 0 0 8px;
+
+    font-size: 1rem;
+}
+
+.desk-card-description {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.desk-card-meta {
+    margin-top: 12px;
+
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+.desk-card-meta p {
+    margin: 4px 0 0;
+}
+
+.desk-card-actions {
+    display: flex;
+    gap: 8px;
+
+    margin-top: 12px;
+}
+
+.desk-card-actions button {
+    flex: 1;
+
+    padding: 8px 10px;
+
+    font-size: 0.82rem;
+}
+
+.desk-empty {
+    padding: 14px;
+
+    color: var(--muted);
+
+    background:
+        rgba(255, 255, 255, 0.55);
+
+    border-radius: 10px;
+
+    text-align: center;
+    font-size: 0.86rem;
+}
+
+
+/* TABLET */
+
+@media (max-width: 1000px) {
+
+    .desk-board {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 620px) {
+
+    .desk-board {
+        grid-template-columns: 1fr;
+    }
+
 }
 
 
@@ -959,6 +1102,14 @@
                 type="button"
             >
                 Aktuelles & Termine
+            </button>
+
+            <button
+                id="desk-tab"
+                class="admin-tab"
+                type="button"
+            >
+                Schreibtisch
             </button>
 
             <button
@@ -1330,6 +1481,232 @@
             ></section>
 
         </div>
+
+<!-- =================================
+     SCHREIBTISCH
+     ================================= -->
+
+<div
+    id="desk-panel"
+    class="admin-panel hidden"
+>
+
+    <div class="toolbar">
+
+        <div>
+            <h2>
+                Schreibtisch
+            </h2>
+
+            <p class="desk-intro">
+                Ideen, Themen und Aufgaben für die Redaktion.
+            </p>
+        </div>
+
+        <button
+            id="new-desk-button"
+            class="primary-button"
+            type="button"
+        >
+            + Neuer Eintrag
+        </button>
+
+    </div>
+
+
+    <!-- =================================
+         SCHREIBTISCH-EDITOR
+         ================================= -->
+
+    <section
+        id="desk-editor"
+        class="card form-card hidden"
+    >
+
+        <h2 id="desk-editor-title">
+            Neuer Eintrag
+        </h2>
+
+
+        <form id="desk-form">
+
+            <div class="form-group">
+
+                <label for="desk-title">
+                    Titel
+                </label>
+
+                <input
+                    id="desk-title"
+                    name="title"
+                    type="text"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="desk-description">
+                    Beschreibung / Notiz
+                </label>
+
+                <textarea
+                    id="desk-description"
+                    name="description"
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="desk-assigned-to">
+                    Zuständig
+                </label>
+
+                <input
+                    id="desk-assigned-to"
+                    name="assigned_to"
+                    type="text"
+                    placeholder="z. B. Ronja, Redaktion, Deutsch-LK"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="desk-status">
+                    Status
+                </label>
+
+                <select
+                    id="desk-status"
+                    name="status"
+                    required
+                >
+                    <option value="idea">
+                        Idee
+                    </option>
+
+                    <option value="planned">
+                        Geplant
+                    </option>
+
+                    <option value="progress">
+                        In Arbeit
+                    </option>
+
+                    <option value="done">
+                        Fertig
+                    </option>
+                </select>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    id="save-desk-button"
+                    class="primary-button"
+                    type="submit"
+                >
+                    Eintrag speichern
+                </button>
+
+
+                <button
+                    id="cancel-desk-button"
+                    class="ghost-button"
+                    type="button"
+                >
+                    Abbrechen
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <div
+            id="desk-status-message"
+            class="status hidden"
+        ></div>
+
+    </section>
+
+
+    <!-- =================================
+         KANBAN-BOARD
+         ================================= -->
+
+    <section class="desk-board">
+
+        <div class="desk-column">
+
+            <div class="desk-column-header">
+                <span class="desk-column-icon">💡</span>
+                <h3>Ideen</h3>
+            </div>
+
+            <div
+                id="desk-idea-list"
+                class="desk-list"
+            ></div>
+
+        </div>
+
+
+        <div class="desk-column">
+
+            <div class="desk-column-header">
+                <span class="desk-column-icon">📌</span>
+                <h3>Geplant</h3>
+            </div>
+
+            <div
+                id="desk-planned-list"
+                class="desk-list"
+            ></div>
+
+        </div>
+
+
+        <div class="desk-column">
+
+            <div class="desk-column-header">
+                <span class="desk-column-icon">✏️</span>
+                <h3>In Arbeit</h3>
+            </div>
+
+            <div
+                id="desk-progress-list"
+                class="desk-list"
+            ></div>
+
+        </div>
+
+
+        <div class="desk-column">
+
+            <div class="desk-column-header">
+                <span class="desk-column-icon">✅</span>
+                <h3>Fertig</h3>
+            </div>
+
+            <div
+                id="desk-done-list"
+                class="desk-list"
+            ></div>
+
+        </div>
+
+    </section>
+
+</div>        
 
 <!-- =================================
      GALERIE

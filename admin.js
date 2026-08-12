@@ -198,6 +198,57 @@ const galleryStatus =
 const galleryList =
     document.querySelector("#gallery-list");
 
+const deskTab =
+    document.querySelector("#desk-tab");
+
+const deskPanel =
+    document.querySelector("#desk-panel");
+
+const newDeskButton =
+    document.querySelector("#new-desk-button");
+
+const deskEditor =
+    document.querySelector("#desk-editor");
+
+const deskEditorTitle =
+    document.querySelector("#desk-editor-title");
+
+const deskForm =
+    document.querySelector("#desk-form");
+
+const deskTitleInput =
+    document.querySelector("#desk-title");
+
+const deskDescriptionInput =
+    document.querySelector("#desk-description");
+
+const deskAssignedToInput =
+    document.querySelector("#desk-assigned-to");
+
+const deskStatusInput =
+    document.querySelector("#desk-status");
+
+const saveDeskButton =
+    document.querySelector("#save-desk-button");
+
+const cancelDeskButton =
+    document.querySelector("#cancel-desk-button");
+
+const deskStatusMessage =
+    document.querySelector("#desk-status-message");
+
+const deskIdeaList =
+    document.querySelector("#desk-idea-list");
+
+const deskPlannedList =
+    document.querySelector("#desk-planned-list");
+
+const deskProgressList =
+    document.querySelector("#desk-progress-list");
+
+const deskDoneList =
+    document.querySelector("#desk-done-list");
+
 
 /*
  * ==========================================
@@ -252,6 +303,8 @@ let editingUpdateId = null;
 let currentRole = null;
 let currentUsers = [];
 let currentGallery = [];
+let currentDeskItems = [];
+let editingDeskId = null;
 
 /*
  * ==========================================
@@ -445,6 +498,10 @@ function showAdminPanel(panel) {
     "hidden"
     );
 
+    deskPanel.classList.add(
+    "hidden"
+    );
+
 
     /*
      * Alle Tabs deaktivieren
@@ -463,6 +520,10 @@ function showAdminPanel(panel) {
 
     galleryPanel.classList.add(
     "hidden"
+    );
+
+    deskTab.classList.remove(
+    "active"
     );
 
 
@@ -496,6 +557,18 @@ function showAdminPanel(panel) {
         );
 
         loadUpdates();
+
+        return;
+    }
+
+    if (
+        panel === deskPanel
+    ) {
+        deskTab.classList.add(
+             "active"
+        ); 
+
+        loadDesk();
 
         return;
     }
@@ -2813,6 +2886,654 @@ async function deleteGalleryItem(
 
 /*
  * ==========================================
+ * SCHREIBTISCH
+ * ==========================================
+ */
+
+
+/*
+ * SCHREIBTISCH LADEN
+ */
+
+async function loadDesk() {
+    try {
+        setDeskLoadingState();
+
+        const response =
+            await fetch(
+                `${API_URL}/admin/desk`,
+                {
+                    method: "GET",
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ??
+                `HTTP ${response.status}`
+            );
+        }
+
+        currentDeskItems =
+            Array.isArray(
+                data.items
+            )
+                ? data.items
+                : [];
+
+        renderDesk();
+
+    } catch (error) {
+        console.error(error);
+
+        const errorHtml = `
+            <div class="desk-empty">
+                Schreibtisch konnte nicht geladen werden.
+            </div>
+        `;
+
+        deskIdeaList.innerHTML =
+            errorHtml;
+
+        deskPlannedList.innerHTML =
+            errorHtml;
+
+        deskProgressList.innerHTML =
+            errorHtml;
+
+        deskDoneList.innerHTML =
+            errorHtml;
+    }
+}
+
+
+function setDeskLoadingState() {
+    const loadingHtml = `
+        <div class="desk-empty">
+            Wird geladen …
+        </div>
+    `;
+
+    deskIdeaList.innerHTML =
+        loadingHtml;
+
+    deskPlannedList.innerHTML =
+        loadingHtml;
+
+    deskProgressList.innerHTML =
+        loadingHtml;
+
+    deskDoneList.innerHTML =
+        loadingHtml;
+}
+
+
+/*
+ * SCHREIBTISCH RENDERN
+ */
+
+function renderDesk() {
+    const columns = {
+        idea:
+            deskIdeaList,
+
+        planned:
+            deskPlannedList,
+
+        progress:
+            deskProgressList,
+
+        done:
+            deskDoneList
+    };
+
+
+    for (
+        const [
+            status,
+            container
+        ]
+        of Object.entries(columns)
+    ) {
+        const items =
+            currentDeskItems.filter(
+                item =>
+                    item.status ===
+                    status
+            );
+
+
+        if (
+            items.length === 0
+        ) {
+            container.innerHTML = `
+                <div class="desk-empty">
+                    Noch keine Einträge.
+                </div>
+            `;
+
+            continue;
+        }
+
+
+        container.innerHTML =
+            items
+                .map(
+                    item =>
+                        createDeskCardHtml(
+                            item
+                        )
+                )
+                .join("");
+    }
+
+
+    bindDeskButtons();
+}
+
+
+function createDeskCardHtml(
+    item
+) {
+    return `
+        <article class="desk-card">
+
+            <h4>
+                ${escapeHtml(item.title)}
+            </h4>
+
+            ${
+                item.description
+                    ? `
+                        <p class="desk-card-description">
+                            ${escapeHtml(
+                                item.description
+                            )}
+                        </p>
+                    `
+                    : ""
+            }
+
+            <div class="desk-card-meta">
+
+                ${
+                    item.assignedTo
+                        ? `
+                            <p>
+                                <strong>Zuständig:</strong>
+                                ${escapeHtml(
+                                    item.assignedTo
+                                )}
+                            </p>
+                        `
+                        : ""
+                }
+
+                ${
+                    item.createdByUsername
+                        ? `
+                            <p>
+                                <strong>Erstellt von:</strong>
+                                ${escapeHtml(
+                                    item.createdByUsername
+                                )}
+                            </p>
+                        `
+                        : ""
+                }
+
+            </div>
+
+            <div class="desk-card-actions">
+
+                <button
+                    class="ghost-button edit-desk-button"
+                    type="button"
+                    data-desk="${escapeHtml(item.id)}"
+                >
+                    Bearbeiten
+                </button>
+
+                <button
+                    class="danger-button delete-desk-button"
+                    type="button"
+                    data-desk="${escapeHtml(item.id)}"
+                >
+                    Löschen
+                </button>
+
+            </div>
+
+        </article>
+    `;
+}
+
+
+/*
+ * SCHREIBTISCH-BUTTONS
+ */
+
+function bindDeskButtons() {
+    document
+        .querySelectorAll(
+            ".edit-desk-button"
+        )
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        openEditDesk(
+                            Number(
+                                button.dataset.desk
+                            )
+                        );
+                    }
+                );
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".delete-desk-button"
+        )
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        deleteDeskItem(
+                            Number(
+                                button.dataset.desk
+                            )
+                        );
+                    }
+                );
+            }
+        );
+}
+
+
+/*
+ * NEUER EINTRAG
+ */
+
+function openNewDesk() {
+    editingDeskId = null;
+
+    deskForm.reset();
+
+    deskStatusInput.value =
+        "idea";
+
+    deskEditorTitle.textContent =
+        "Neuer Eintrag";
+
+    saveDeskButton.textContent =
+        "Eintrag speichern";
+
+    hideStatus(
+        deskStatusMessage
+    );
+
+    deskEditor.classList.remove(
+        "hidden"
+    );
+
+    deskTitleInput.focus();
+
+    deskEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+/*
+ * EINTRAG BEARBEITEN
+ */
+
+function openEditDesk(
+    deskId
+) {
+    const item =
+        currentDeskItems.find(
+            deskItem =>
+                Number(
+                    deskItem.id
+                ) === deskId
+        );
+
+
+    if (!item) {
+        return;
+    }
+
+
+    editingDeskId =
+        deskId;
+
+
+    deskForm.reset();
+
+
+    deskTitleInput.value =
+        item.title ?? "";
+
+    deskDescriptionInput.value =
+        item.description ?? "";
+
+    deskAssignedToInput.value =
+        item.assignedTo ?? "";
+
+    deskStatusInput.value =
+        item.status ?? "idea";
+
+
+    deskEditorTitle.textContent =
+        "Eintrag bearbeiten";
+
+
+    saveDeskButton.textContent =
+        "Änderungen speichern";
+
+
+    hideStatus(
+        deskStatusMessage
+    );
+
+
+    deskEditor.classList.remove(
+        "hidden"
+    );
+
+
+    deskTitleInput.focus();
+
+
+    deskEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+function closeDeskEditor() {
+    editingDeskId = null;
+
+    deskForm.reset();
+
+    deskEditor.classList.add(
+        "hidden"
+    );
+
+    hideStatus(
+        deskStatusMessage
+    );
+}
+
+
+/*
+ * EINTRAG SPEICHERN
+ */
+
+deskForm.addEventListener(
+    "submit",
+    async event => {
+        event.preventDefault();
+
+        hideStatus(
+            deskStatusMessage
+        );
+
+
+        const payload = {
+            title:
+                deskTitleInput.value
+                    .trim(),
+
+            description:
+                deskDescriptionInput.value
+                    .trim(),
+
+            assignedTo:
+                deskAssignedToInput.value
+                    .trim(),
+
+            status:
+                deskStatusInput.value
+        };
+
+
+        saveDeskButton.disabled =
+            true;
+
+
+        saveDeskButton.textContent =
+            editingDeskId === null
+                ? "Wird gespeichert …"
+                : "Wird aktualisiert …";
+
+
+        try {
+            let response;
+
+
+            if (
+                editingDeskId === null
+            ) {
+                response =
+                    await fetch(
+                        `${API_URL}/admin/desk`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                ...getAuthHeaders(),
+
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+            } else {
+                response =
+                    await fetch(
+                        `${API_URL}/admin/desk/${editingDeskId}`,
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                ...getAuthHeaders(),
+
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+            }
+
+
+            if (
+                await handleUnauthorized(
+                    response
+                )
+            ) {
+                return;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+                showStatus(
+                    deskStatusMessage,
+                    data.error ??
+                        "Speichern fehlgeschlagen.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            showStatus(
+                deskStatusMessage,
+                editingDeskId === null
+                    ? "Eintrag wurde erstellt."
+                    : "Eintrag wurde aktualisiert.",
+                "success"
+            );
+
+
+            await loadDesk();
+
+
+            setTimeout(
+                () => {
+                    closeDeskEditor();
+                },
+                700
+            );
+
+        } catch (error) {
+            console.error(error);
+
+
+            showStatus(
+                deskStatusMessage,
+                "Die Verbindung zum Server ist fehlgeschlagen.",
+                "error"
+            );
+
+        } finally {
+            saveDeskButton.disabled =
+                false;
+
+            saveDeskButton.textContent =
+                editingDeskId === null
+                    ? "Eintrag speichern"
+                    : "Änderungen speichern";
+        }
+    }
+);
+
+
+/*
+ * EINTRAG LÖSCHEN
+ */
+
+async function deleteDeskItem(
+    deskId
+) {
+    const item =
+        currentDeskItems.find(
+            deskItem =>
+                Number(
+                    deskItem.id
+                ) === deskId
+        );
+
+
+    if (!item) {
+        return;
+    }
+
+
+    const confirmed =
+        window.confirm(
+            `"${item.title}" wirklich löschen?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+        const response =
+            await fetch(
+                `${API_URL}/admin/desk/${deskId}`,
+                {
+                    method: "DELETE",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+            window.alert(
+                data.error ??
+                    "Der Eintrag konnte nicht gelöscht werden."
+            );
+
+            return;
+        }
+
+
+        if (
+            editingDeskId ===
+            deskId
+        ) {
+            closeDeskEditor();
+        }
+
+
+        await loadDesk();
+
+    } catch (error) {
+        console.error(error);
+
+        window.alert(
+            "Die Verbindung zum Server ist fehlgeschlagen."
+        );
+    }
+}
+
+/*
+ * ==========================================
  * LOGIN
  * ==========================================
  */
@@ -3231,6 +3952,27 @@ newGalleryButton.addEventListener(
 cancelGalleryButton.addEventListener(
     "click",
     closeGalleryEditor
+);
+
+deskTab.addEventListener(
+    "click",
+    () => {
+        showAdminPanel(
+            deskPanel
+        );
+    }
+);
+
+
+newDeskButton.addEventListener(
+    "click",
+    openNewDesk
+);
+
+
+cancelDeskButton.addEventListener(
+    "click",
+    closeDeskEditor
 );
 
 
