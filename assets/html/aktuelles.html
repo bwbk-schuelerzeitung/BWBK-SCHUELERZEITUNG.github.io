@@ -10,12 +10,12 @@
 
     <meta
         name="description"
-        content="Archiv von BWBK Aktuell – der Schülerzeitung des Bergischen Weiterbildungskollegs"
+        content="Aktuelles und wichtige Termine des Bergischen Weiterbildungskollegs"
     >
 
     <meta name="theme-color" content="#0f172a">
 
-    <title>Archiv – BWBK Aktuell</title>
+    <title>Aktuelles & Termine – BWBK Aktuell</title>
 
     <!-- CSS liegt im Hauptverzeichnis -->
     <link
@@ -29,7 +29,7 @@
         href="../../manifest.json"
     >
 
-    <!-- Icons liegen unter assets/icons -->
+    <!-- Icons -->
     <link
         rel="apple-touch-icon"
         href="../icons/icon-192.png"
@@ -41,14 +41,9 @@
         href="../icons/favicon.png"
     >
 
-    <!-- JavaScript liegt unter assets/js -->
+    <!-- JavaScript -->
     <script
-        src="../js/archive.js?v=1"
-        defer
-    ></script>
-
-    <script
-        src="../js/views.js?v=1"
+        src="../js/aktuelles.js?v=1"
         defer
     ></script>
 </head>
@@ -115,29 +110,106 @@
 
 <main>
 
-    <section class="section archive-page-section">
+    <section class="section updates-page-section">
 
         <div class="section-heading">
 
             <p class="eyebrow">
-                Alle Veröffentlichungen
+                Rund ums BWBK
             </p>
 
             <h1>
-                Archiv
+                Aktuelles & Termine
             </h1>
 
         </div>
 
 
-        <div
-            id="archive"
-            class="archive-grid"
-        >
-            <p class="status-message">
-                Ausgaben werden geladen …
-            </p>
-        </div>
+        <!-- AUS DER SCHULE -->
+
+        <section class="updates-category">
+
+            <div class="updates-category-heading">
+
+                <p class="eyebrow">
+                    Direkt vom BWBK
+                </p>
+
+                <h2>
+                    Aus der Schule
+                </h2>
+
+                <p class="updates-category-description">
+                    Neuigkeiten, Hinweise und Informationen
+                    aus unserem Schulalltag.
+                </p>
+
+            </div>
+
+            <div
+                id="school-updates"
+                class="updates-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- RUND UM SCHULE & BILDUNG -->
+
+        <section class="updates-category">
+
+            <div class="updates-category-heading">
+
+                <p class="eyebrow">
+                    Über den Schulhof hinaus
+                </p>
+
+                <h2>
+                    Rund um Schule & Bildung
+                </h2>
+
+                <p class="updates-category-description">
+                    Veranstaltungen, Angebote und Informationen,
+                    die auch außerhalb des BWBK interessant sind.
+                </p>
+
+            </div>
+
+            <div
+                id="external-updates"
+                class="updates-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- TERMINE -->
+
+        <section class="updates-category">
+
+            <div class="updates-category-heading">
+
+                <p class="eyebrow">
+                    Nicht verpassen
+                </p>
+
+                <h2>
+                    Wichtige Termine
+                </h2>
+
+                <p class="updates-category-description">
+                    Wichtige Daten und Termine
+                    auf einen Blick.
+                </p>
+
+            </div>
+
+            <div
+                id="important-dates"
+                class="dates-list"
+            ></div>
+
+        </section>
 
     </section>
 
