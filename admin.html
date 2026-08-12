@@ -34,18 +34,21 @@
         body {
             margin: 0;
             min-height: 100vh;
+
             font-family:
                 -apple-system,
                 BlinkMacSystemFont,
                 "Segoe UI",
                 sans-serif;
+
             background: var(--background);
             color: var(--text);
         }
 
         button,
         input,
-        textarea {
+        textarea,
+        select {
             font: inherit;
         }
 
@@ -57,6 +60,11 @@
             display: none !important;
         }
 
+
+        /* =====================================
+           HEADER
+           ===================================== */
+
         .admin-header {
             background: var(--surface);
             border-bottom: 1px solid var(--border);
@@ -66,6 +74,7 @@
             width: min(1100px, calc(100% - 32px));
             margin: 0 auto;
             padding: 22px 0;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -92,6 +101,11 @@
             color: var(--muted);
         }
 
+
+        /* =====================================
+           GRUNDLAYOUT
+           ===================================== */
+
         .admin-main {
             width: min(1100px, calc(100% - 32px));
             margin: 32px auto 60px;
@@ -100,7 +114,10 @@
         .card {
             background: var(--surface);
             border-radius: 16px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+
+            box-shadow:
+                0 4px 18px
+                rgba(0, 0, 0, 0.07);
         }
 
         .auth-card {
@@ -113,148 +130,60 @@
             margin-top: 0;
         }
 
+
+        /* =====================================
+           ADMIN-TABS
+           ===================================== */
+
         .admin-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 28px;
-    padding: 6px;
+            display: flex;
+            gap: 8px;
 
-    background: var(--surface);
-    border-radius: 12px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
-}
+            margin-bottom: 28px;
+            padding: 6px;
 
-.admin-tab {
-    flex: 1;
+            background: var(--surface);
+            border-radius: 12px;
 
-    padding: 12px 16px;
+            box-shadow:
+                0 4px 18px
+                rgba(0, 0, 0, 0.07);
+        }
 
-    color: var(--muted);
-    background: transparent;
+        .admin-tab {
+            flex: 1;
 
-    border: 0;
-    border-radius: 8px;
+            padding: 12px 16px;
 
-    font-weight: 700;
-}
+            color: var(--muted);
+            background: transparent;
 
-.admin-tab.active {
-    color: white;
-    background: #222;
-}
+            border: 0;
+            border-radius: 8px;
 
-.admin-panel.hidden {
-    display: none;
-}
+            font-weight: 700;
+        }
 
-.updates-list {
-    display: grid;
-    gap: 16px;
-}
+        .admin-tab.active {
+            color: white;
+            background: #222;
+        }
 
-.update-admin-card {
-    padding: 20px;
+        .admin-panel.hidden {
+            display: none;
+        }
 
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 20px;
-    align-items: center;
-}
 
-.update-admin-info h3 {
-    margin: 4px 0 8px;
-}
-
-.update-admin-meta {
-    margin: 0 0 6px;
-
-    color: var(--muted);
-    font-size: 0.9rem;
-}
-
-.update-admin-description {
-    margin: 0;
-    line-height: 1.5;
-}
-
-.update-admin-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    min-width: 130px;
-}
-
-.update-badge {
-    display: inline-block;
-
-    margin-bottom: 6px;
-    padding: 4px 8px;
-
-    color: #555;
-    background: #eeeeee;
-
-    border-radius: 999px;
-
-    font-size: 0.78rem;
-    font-weight: 700;
-}
-
-.update-badge.draft {
-    color: #7a5200;
-    background: #fff2c7;
-}
-
-.checkbox-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.checkbox-row input {
-    width: auto;
-}
-
-.checkbox-row label {
-    margin: 0;
-}
-
-select {
-    width: 100%;
-    padding: 11px 12px;
-
-    background: #fff;
-
-    border: 1px solid #bbbbbb;
-    border-radius: 8px;
-
-    font: inherit;
-}
-
-@media (max-width: 760px) {
-    .admin-tabs {
-        flex-direction: column;
-    }
-
-    .update-admin-card {
-        grid-template-columns: 1fr;
-    }
-
-    .update-admin-actions {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
-    .update-admin-actions > * {
-        flex: 1;
-    }
-}
+        /* =====================================
+           TOOLBAR
+           ===================================== */
 
         .toolbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+
             margin-bottom: 22px;
         }
 
@@ -262,13 +191,20 @@ select {
             margin: 0;
         }
 
+
+        /* =====================================
+           BUTTONS
+           ===================================== */
+
         .primary-button,
         .secondary-button,
         .danger-button,
         .ghost-button {
             border: 0;
             border-radius: 9px;
+
             padding: 10px 16px;
+
             font-weight: 700;
         }
 
@@ -296,6 +232,11 @@ select {
             width: 100%;
         }
 
+
+        /* =====================================
+           AUSGABEN
+           ===================================== */
+
         .issues-list {
             display: grid;
             gap: 16px;
@@ -303,6 +244,7 @@ select {
 
         .issue-card {
             padding: 20px;
+
             display: grid;
             grid-template-columns: 90px 1fr auto;
             gap: 20px;
@@ -312,7 +254,9 @@ select {
         .issue-cover {
             width: 90px;
             aspect-ratio: 0.7;
+
             object-fit: cover;
+
             border-radius: 7px;
             background: #eeeeee;
         }
@@ -323,6 +267,7 @@ select {
 
         .issue-number {
             margin: 0 0 4px;
+
             color: var(--muted);
             font-size: 0.92rem;
         }
@@ -341,6 +286,7 @@ select {
             display: flex;
             flex-direction: column;
             gap: 8px;
+
             min-width: 130px;
         }
 
@@ -348,6 +294,74 @@ select {
             text-decoration: none;
             text-align: center;
         }
+
+
+        /* =====================================
+           AKTUELLES
+           ===================================== */
+
+        .updates-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .update-admin-card {
+            padding: 20px;
+
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .update-admin-info h3 {
+            margin: 4px 0 8px;
+        }
+
+        .update-admin-meta {
+            margin: 0 0 6px;
+
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .update-admin-description {
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .update-admin-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            min-width: 130px;
+        }
+
+        .update-badge {
+            display: inline-block;
+
+            margin-bottom: 6px;
+            padding: 4px 8px;
+
+            color: #555;
+            background: #eeeeee;
+
+            border-radius: 999px;
+
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .update-badge.draft {
+            color: #7a5200;
+            background: #fff2c7;
+        }
+
+
+        /* =====================================
+           FORMULARE
+           ===================================== */
 
         .form-card {
             padding: 28px;
@@ -364,16 +378,22 @@ select {
 
         label {
             display: block;
+
             margin-bottom: 7px;
+
             font-weight: 700;
         }
 
         input,
-        textarea {
+        textarea,
+        select {
             width: 100%;
+
             padding: 11px 12px;
+
             border: 1px solid #bbbbbb;
             border-radius: 8px;
+
             background: #fff;
         }
 
@@ -384,6 +404,7 @@ select {
 
         .form-hint {
             margin-top: 6px;
+
             color: var(--muted);
             font-size: 0.9rem;
         }
@@ -397,9 +418,29 @@ select {
             flex: 1;
         }
 
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-row input {
+            width: auto;
+        }
+
+        .checkbox-row label {
+            margin: 0;
+        }
+
+
+        /* =====================================
+           STATUS
+           ===================================== */
+
         .status {
             margin-top: 18px;
             padding: 12px 14px;
+
             border-radius: 9px;
         }
 
@@ -413,6 +454,7 @@ select {
 
         .empty-state {
             padding: 30px;
+
             text-align: center;
             color: var(--muted);
         }
@@ -422,7 +464,13 @@ select {
             text-align: center;
         }
 
+
+        /* =====================================
+           MOBIL
+           ===================================== */
+
         @media (max-width: 760px) {
+
             .admin-header-inner {
                 align-items: flex-start;
                 flex-direction: column;
@@ -431,6 +479,10 @@ select {
             .header-user {
                 width: 100%;
                 justify-content: space-between;
+            }
+
+            .admin-tabs {
+                flex-direction: column;
             }
 
             .toolbar {
@@ -448,11 +500,25 @@ select {
 
             .issue-actions {
                 grid-column: 1 / -1;
+
                 flex-direction: row;
                 flex-wrap: wrap;
             }
 
             .issue-actions > * {
+                flex: 1;
+            }
+
+            .update-admin-card {
+                grid-template-columns: 1fr;
+            }
+
+            .update-admin-actions {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .update-admin-actions > * {
                 flex: 1;
             }
 
@@ -463,20 +529,31 @@ select {
     </style>
 </head>
 
+
 <body>
 
 <header class="admin-header">
+
     <div class="admin-header-inner">
 
         <div class="brand">
-            <h1>BWBK Aktuell</h1>
-            <p>Redaktionsbereich</p>
+
+            <h1>
+                BWBK Aktuell
+            </h1>
+
+            <p>
+                Redaktionsbereich
+            </p>
+
         </div>
+
 
         <div
             id="header-user"
             class="header-user hidden"
         >
+
             <span>
                 Angemeldet als
                 <strong id="current-user"></strong>
@@ -489,15 +566,20 @@ select {
             >
                 Abmelden
             </button>
+
         </div>
 
     </div>
+
 </header>
 
 
 <main class="admin-main">
 
-    <!-- LADEN -->
+
+    <!-- =====================================
+         LADEN
+         ===================================== -->
 
     <section
         id="loading-section"
@@ -507,22 +589,29 @@ select {
     </section>
 
 
-    <!-- ERSTEINRICHTUNG -->
+    <!-- =====================================
+         ERSTEINRICHTUNG
+         ===================================== -->
 
     <section
         id="setup-section"
         class="card auth-card hidden"
     >
-        <h2>Ersteinrichtung</h2>
+
+        <h2>
+            Ersteinrichtung
+        </h2>
 
         <p>
             Lege den ersten Zugang für den
             Redaktionsbereich an.
         </p>
 
+
         <form id="setup-form">
 
             <div class="form-group">
+
                 <label for="setup-username">
                     Benutzer-ID
                 </label>
@@ -535,9 +624,12 @@ select {
                     autocomplete="username"
                     required
                 >
+
             </div>
 
+
             <div class="form-group">
+
                 <label for="setup-password">
                     Passwort
                 </label>
@@ -550,9 +642,12 @@ select {
                     autocomplete="new-password"
                     required
                 >
+
             </div>
 
+
             <div class="form-group">
+
                 <label for="setup-password-repeat">
                     Passwort wiederholen
                 </label>
@@ -565,9 +660,12 @@ select {
                     autocomplete="new-password"
                     required
                 >
+
             </div>
 
+
             <div class="form-group">
+
                 <label for="setup-token">
                     Admin-Schlüssel
                 </label>
@@ -579,7 +677,9 @@ select {
                     autocomplete="off"
                     required
                 >
+
             </div>
+
 
             <button
                 class="primary-button full-button"
@@ -590,24 +690,33 @@ select {
 
         </form>
 
+
         <div
             id="setup-status"
             class="status hidden"
         ></div>
+
     </section>
 
 
-    <!-- LOGIN -->
+    <!-- =====================================
+         LOGIN
+         ===================================== -->
 
     <section
         id="login-section"
         class="card auth-card hidden"
     >
-        <h2>Anmelden</h2>
+
+        <h2>
+            Anmelden
+        </h2>
+
 
         <form id="login-form">
 
             <div class="form-group">
+
                 <label for="login-username">
                     Benutzer-ID
                 </label>
@@ -619,9 +728,12 @@ select {
                     autocomplete="username"
                     required
                 >
+
             </div>
 
+
             <div class="form-group">
+
                 <label for="login-password">
                     Passwort
                 </label>
@@ -633,7 +745,9 @@ select {
                     autocomplete="current-password"
                     required
                 >
+
             </div>
+
 
             <button
                 class="primary-button full-button"
@@ -644,425 +758,466 @@ select {
 
         </form>
 
+
         <div
             id="login-status"
             class="status hidden"
         ></div>
+
     </section>
 
 
-    <!-- REDAKTION -->
-
-   <section
-    id="admin-section"
-    class="hidden"
->
-
-    <!-- ADMIN-NAVIGATION -->
-
-    <div class="admin-tabs">
-
-        <button
-            id="issues-tab"
-            class="admin-tab active"
-            type="button"
-        >
-            Ausgaben
-        </button>
-
-        <button
-            id="updates-tab"
-            class="admin-tab"
-            type="button"
-        >
-            Aktuelles & Termine
-        </button>
-
-        <button
-            id="admin-tab"
-            class="admin-tab hidden"
-            type="button"
-        >
-            Admin
-        </button>
-
-    </div>
-
-
     <!-- =====================================
-         AUSGABEN
+         REDAKTION
          ===================================== -->
-
-    <div
-        id="issues-panel"
-        class="admin-panel"
-    >
-
-        <div class="toolbar">
-
-            <h2>Ausgaben</h2>
-
-            <button
-                id="new-issue-button"
-                class="primary-button"
-                type="button"
-            >
-                + Neue Ausgabe
-            </button>
-
-        </div>
-
-
-        <section
-            id="issue-editor"
-            class="card form-card hidden"
-        >
-            <h2 id="editor-title">
-                Neue Ausgabe
-            </h2>
-
-            <form id="issue-form">
-
-                <div class="form-group">
-                    <label for="issue-number">
-                        Ausgabennummer
-                    </label>
-
-                    <input
-                        id="issue-number"
-                        name="issue_number"
-                        type="number"
-                        min="1"
-                        required
-                    >
-                </div>
-
-
-                <div class="form-group">
-                    <label for="issue-title">
-                        Titel
-                    </label>
-
-                    <input
-                        id="issue-title"
-                        name="title"
-                        type="text"
-                        required
-                    >
-                </div>
-
-
-                <div class="form-group">
-                    <label for="issue-description">
-                        Beschreibung
-                    </label>
-
-                    <textarea
-                        id="issue-description"
-                        name="description"
-                    ></textarea>
-                </div>
-
-
-                <div class="form-group">
-                    <label for="published-at">
-                        Veröffentlichungsdatum
-                    </label>
-
-                    <input
-                        id="published-at"
-                        name="published_at"
-                        type="date"
-                        required
-                    >
-                </div>
-
-
-                <div class="form-group">
-                    <label for="issue-cover">
-                        Cover
-                    </label>
-
-                    <input
-                        id="issue-cover"
-                        name="cover"
-                        type="file"
-                        accept="image/*"
-                    >
-
-                    <div
-                        id="cover-hint"
-                        class="form-hint"
-                    ></div>
-                </div>
-
-
-                <div class="form-group">
-                    <label for="issue-pdf">
-                        PDF
-                    </label>
-
-                    <input
-                        id="issue-pdf"
-                        name="pdf"
-                        type="file"
-                        accept="application/pdf"
-                    >
-
-                    <div
-                        id="pdf-hint"
-                        class="form-hint"
-                    ></div>
-                </div>
-
-
-                <div class="form-actions">
-
-                    <button
-                        id="save-issue-button"
-                        class="primary-button"
-                        type="submit"
-                    >
-                        Ausgabe veröffentlichen
-                    </button>
-
-                    <button
-                        id="cancel-edit-button"
-                        class="ghost-button"
-                        type="button"
-                    >
-                        Abbrechen
-                    </button>
-
-                </div>
-
-            </form>
-
-
-            <div
-                id="issue-status"
-                class="status hidden"
-            ></div>
-
-        </section>
-
-
-        <section
-            id="issues-list"
-            class="issues-list"
-        ></section>
-
-    </div>
-
-
-    <!-- =====================================
-         AKTUELLES & TERMINE
-         ===================================== -->
-
-    <div
-        id="updates-panel"
-        class="admin-panel hidden"
-    >
-
-        <div class="toolbar">
-
-            <h2>Aktuelles & Termine</h2>
-
-            <button
-                id="new-update-button"
-                class="primary-button"
-                type="button"
-            >
-                + Neuer Eintrag
-            </button>
-
-        </div>
-
-
-        <!-- EINTRAG ERSTELLEN / BEARBEITEN -->
-
-        <section
-            id="update-editor"
-            class="card form-card hidden"
-        >
-
-            <h2 id="update-editor-title">
-                Neuer Eintrag
-            </h2>
-
-
-            <form id="update-form">
-
-                <div class="form-group">
-
-                    <label for="update-category">
-                        Kategorie
-                    </label>
-
-                    <select
-                        id="update-category"
-                        name="category"
-                        required
-                    >
-                        <option value="school">
-                            Aus der Schule
-                        </option>
-
-                        <option value="external">
-                            Rund um Schule & Bildung
-                        </option>
-
-                        <option value="date">
-                            Wichtiger Termin
-                        </option>
-                    </select>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="update-title">
-                        Titel
-                    </label>
-
-                    <input
-                        id="update-title"
-                        name="title"
-                        type="text"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="update-description">
-                        Beschreibung
-                    </label>
-
-                    <textarea
-                        id="update-description"
-                        name="description"
-                    ></textarea>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="update-date">
-                        Datum
-                    </label>
-
-                    <input
-                        id="update-date"
-                        name="date"
-                        type="date"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group checkbox-row">
-
-                    <input
-                        id="update-published"
-                        name="is_published"
-                        type="checkbox"
-                        checked
-                    >
-
-                    <label for="update-published">
-                        Sofort veröffentlichen
-                    </label>
-
-                </div>
-
-
-                <div class="form-actions">
-
-                    <button
-                        id="save-update-button"
-                        class="primary-button"
-                        type="submit"
-                    >
-                        Eintrag veröffentlichen
-                    </button>
-
-                    <button
-                        id="cancel-update-button"
-                        class="ghost-button"
-                        type="button"
-                    >
-                        Abbrechen
-                    </button>
-
-                </div>
-
-            </form>
-
-
-            <div
-                id="update-status"
-                class="status hidden"
-            ></div>
-
-            <div
-    id="admin-panel"
-    class="admin-panel hidden"
->
-
-    <div class="toolbar">
-        <h2>Administration</h2>
-    </div>
-
-    <section class="card form-card">
-
-        <h2>Benutzerverwaltung</h2>
-
-        <p>
-            Hier können Administratoren später
-            Benutzer anlegen, Rollen verwalten
-            und Passwörter zurücksetzen.
-        </p>
-
-        <button
-            id="new-user-button"
-            class="primary-button"
-            type="button"
-        >
-            + Neuer Benutzer
-        </button>
-
-    </section>
 
     <section
-        id="users-list"
-        class="issues-list"
+        id="admin-section"
+        class="hidden"
     >
-        <div class="card empty-state">
-            Benutzerverwaltung wird vorbereitet.
+
+
+        <!-- ADMIN-NAVIGATION -->
+
+        <div class="admin-tabs">
+
+            <button
+                id="issues-tab"
+                class="admin-tab active"
+                type="button"
+            >
+                Ausgaben
+            </button>
+
+
+            <button
+                id="updates-tab"
+                class="admin-tab"
+                type="button"
+            >
+                Aktuelles & Termine
+            </button>
+
+
+            <button
+                id="admin-tab"
+                class="admin-tab hidden"
+                type="button"
+            >
+                Admin
+            </button>
+
         </div>
+
+
+        <!-- =================================
+             AUSGABEN
+             ================================= -->
+
+        <div
+            id="issues-panel"
+            class="admin-panel"
+        >
+
+            <div class="toolbar">
+
+                <h2>
+                    Ausgaben
+                </h2>
+
+                <button
+                    id="new-issue-button"
+                    class="primary-button"
+                    type="button"
+                >
+                    + Neue Ausgabe
+                </button>
+
+            </div>
+
+
+            <section
+                id="issue-editor"
+                class="card form-card hidden"
+            >
+
+                <h2 id="editor-title">
+                    Neue Ausgabe
+                </h2>
+
+
+                <form id="issue-form">
+
+                    <div class="form-group">
+
+                        <label for="issue-number">
+                            Ausgabennummer
+                        </label>
+
+                        <input
+                            id="issue-number"
+                            name="issue_number"
+                            type="number"
+                            min="1"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="issue-title">
+                            Titel
+                        </label>
+
+                        <input
+                            id="issue-title"
+                            name="title"
+                            type="text"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="issue-description">
+                            Beschreibung
+                        </label>
+
+                        <textarea
+                            id="issue-description"
+                            name="description"
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="published-at">
+                            Veröffentlichungsdatum
+                        </label>
+
+                        <input
+                            id="published-at"
+                            name="published_at"
+                            type="date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="issue-cover">
+                            Cover
+                        </label>
+
+                        <input
+                            id="issue-cover"
+                            name="cover"
+                            type="file"
+                            accept="image/*"
+                        >
+
+                        <div
+                            id="cover-hint"
+                            class="form-hint"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="issue-pdf">
+                            PDF
+                        </label>
+
+                        <input
+                            id="issue-pdf"
+                            name="pdf"
+                            type="file"
+                            accept="application/pdf"
+                        >
+
+                        <div
+                            id="pdf-hint"
+                            class="form-hint"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <button
+                            id="save-issue-button"
+                            class="primary-button"
+                            type="submit"
+                        >
+                            Ausgabe veröffentlichen
+                        </button>
+
+
+                        <button
+                            id="cancel-edit-button"
+                            class="ghost-button"
+                            type="button"
+                        >
+                            Abbrechen
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                <div
+                    id="issue-status"
+                    class="status hidden"
+                ></div>
+
+            </section>
+
+
+            <section
+                id="issues-list"
+                class="issues-list"
+            ></section>
+
+        </div>
+
+
+        <!-- =================================
+             AKTUELLES & TERMINE
+             ================================= -->
+
+        <div
+            id="updates-panel"
+            class="admin-panel hidden"
+        >
+
+            <div class="toolbar">
+
+                <h2>
+                    Aktuelles & Termine
+                </h2>
+
+                <button
+                    id="new-update-button"
+                    class="primary-button"
+                    type="button"
+                >
+                    + Neuer Eintrag
+                </button>
+
+            </div>
+
+
+            <section
+                id="update-editor"
+                class="card form-card hidden"
+            >
+
+                <h2 id="update-editor-title">
+                    Neuer Eintrag
+                </h2>
+
+
+                <form id="update-form">
+
+                    <div class="form-group">
+
+                        <label for="update-category">
+                            Kategorie
+                        </label>
+
+                        <select
+                            id="update-category"
+                            name="category"
+                            required
+                        >
+
+                            <option value="school">
+                                Aus der Schule
+                            </option>
+
+                            <option value="external">
+                                Rund um Schule & Bildung
+                            </option>
+
+                            <option value="date">
+                                Wichtiger Termin
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="update-title">
+                            Titel
+                        </label>
+
+                        <input
+                            id="update-title"
+                            name="title"
+                            type="text"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="update-description">
+                            Beschreibung
+                        </label>
+
+                        <textarea
+                            id="update-description"
+                            name="description"
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="update-date">
+                            Datum
+                        </label>
+
+                        <input
+                            id="update-date"
+                            name="date"
+                            type="date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group checkbox-row">
+
+                        <input
+                            id="update-published"
+                            name="is_published"
+                            type="checkbox"
+                            checked
+                        >
+
+                        <label for="update-published">
+                            Sofort veröffentlichen
+                        </label>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <button
+                            id="save-update-button"
+                            class="primary-button"
+                            type="submit"
+                        >
+                            Eintrag veröffentlichen
+                        </button>
+
+
+                        <button
+                            id="cancel-update-button"
+                            class="ghost-button"
+                            type="button"
+                        >
+                            Abbrechen
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                <div
+                    id="update-status"
+                    class="status hidden"
+                ></div>
+
+            </section>
+
+
+            <section
+                id="updates-list"
+                class="updates-list"
+            ></section>
+
+        </div>
+
+
+        <!-- =================================
+             ADMINISTRATION
+             ================================= -->
+
+        <div
+            id="admin-panel"
+            class="admin-panel hidden"
+        >
+
+            <div class="toolbar">
+
+                <h2>
+                    Administration
+                </h2>
+
+            </div>
+
+
+            <section class="card form-card">
+
+                <h2>
+                    Benutzerverwaltung
+                </h2>
+
+                <p>
+                    Hier können Administratoren
+                    Benutzer anlegen, Rollen
+                    verwalten und Passwörter
+                    zurücksetzen.
+                </p>
+
+                <button
+                    id="new-user-button"
+                    class="primary-button"
+                    type="button"
+                >
+                    + Neuer Benutzer
+                </button>
+
+            </section>
+
+
+            <section
+                id="users-list"
+                class="issues-list"
+            >
+
+                <div class="card empty-state">
+                    Benutzerverwaltung wird vorbereitet.
+                </div>
+
+            </section>
+
+        </div>
+
     </section>
-
-</div>
-
-        </section>
-
-
-        <!-- EINTRAGSLISTE -->
-
-        <section
-            id="updates-list"
-            class="updates-list"
-        ></section>
-
-    </div>
-
-</section>
 
 </main>
 
