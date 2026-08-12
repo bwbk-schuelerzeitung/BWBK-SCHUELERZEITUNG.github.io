@@ -191,7 +191,7 @@ function renderArchive(issues, container) {
             <div class="archive-all-link-wrapper">
                 <a
                     class="archive-all-link"
-                    href="archiv.html"
+                    href="assets/html/archiv.html"
                 >
                     Alle Ausgaben ansehen →
                 </a>

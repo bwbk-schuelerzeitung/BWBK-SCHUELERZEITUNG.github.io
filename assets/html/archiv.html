@@ -17,23 +17,42 @@
 
     <title>Archiv – BWBK Aktuell</title>
 
-    <link rel="stylesheet" href="style.css?v=6">
-    <link rel="manifest" href="manifest.json">
+    <!-- CSS liegt im Hauptverzeichnis -->
+    <link
+        rel="stylesheet"
+        href="../../style.css?v=6"
+    >
 
+    <!-- Manifest liegt im Hauptverzeichnis -->
+    <link
+        rel="manifest"
+        href="../../manifest.json"
+    >
+
+    <!-- Icons liegen unter assets/icons -->
     <link
         rel="apple-touch-icon"
-        href="assets/icons/icon-192.png"
+        href="../icons/icon-192.png"
     >
 
     <link
         rel="icon"
         type="image/png"
-        href="assets/icons/favicon.png"
+        href="../icons/favicon.png"
     >
 
-    <script src="archive.js?v=1" defer></script>
-    <script src="assets/js/views.js?v=1" defer></script>
+    <!-- JavaScript liegt unter assets/js -->
+    <script
+        src="../js/archive.js?v=1"
+        defer
+    ></script>
+
+    <script
+        src="../js/views.js?v=1"
+        defer
+    ></script>
 </head>
+
 
 <body>
 
@@ -42,18 +61,20 @@
 
         <a
             class="brand"
-            href="index.html"
+            href="../../index.html"
             aria-label="Zur Startseite"
         >
             <img
                 class="brand-logo"
-                src="assets/images/logo.png"
+                src="../images/logo.png"
                 alt="BWBK Aktuell"
             >
         </a>
 
+
         <div class="navigation-links">
-            <a href="index.html#ausgaben">
+
+            <a href="../../index.html#ausgaben">
                 Ausgaben
             </a>
 
@@ -61,22 +82,24 @@
                 Archiv
             </a>
 
-            <a href="index.html#redaktion">
+            <a href="../../index.html#redaktion">
                 Team
             </a>
 
-            <a href="index.html#bilder">
+            <a href="../../index.html#bilder">
                 Galerie
             </a>
 
-            <a href="index.html#mitmachen">
+            <a href="../../index.html#mitmachen">
                 Mitmachen
             </a>
 
-            <a href="index.html#kontakt">
+            <a href="../../index.html#kontakt">
                 Kontakt
             </a>
+
         </div>
+
 
         <span class="since-label">
             Seit 2026
@@ -91,12 +114,17 @@
     <section class="section archive-page-section">
 
         <div class="section-heading">
+
             <p class="eyebrow">
                 Alle Veröffentlichungen
             </p>
 
-            <h1>Archiv</h1>
+            <h1>
+                Archiv
+            </h1>
+
         </div>
+
 
         <div
             id="archive"
@@ -114,7 +142,9 @@
 
 <footer class="site-footer">
 
-    <p>BWBK Aktuell</p>
+    <p>
+        BWBK Aktuell
+    </p>
 
     <p>
         Schülerzeitung des Bergischen Weiterbildungskollegs
@@ -125,6 +155,7 @@
     </p>
 
 </footer>
+
 
 </body>
 </html>
