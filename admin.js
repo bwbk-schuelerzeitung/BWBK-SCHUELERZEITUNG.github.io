@@ -93,10 +93,75 @@ const issueStatus =
 const issuesList =
     document.querySelector("#issues-list");
 
+    /*
+ * ==========================================
+ * ADMIN-NAVIGATION
+ * ==========================================
+ */
+
+const issuesTab =
+    document.querySelector("#issues-tab");
+
+const updatesTab =
+    document.querySelector("#updates-tab");
+
+const issuesPanel =
+    document.querySelector("#issues-panel");
+
+const updatesPanel =
+    document.querySelector("#updates-panel");
+
+
+/*
+ * ==========================================
+ * AKTUELLES & TERMINE
+ * ==========================================
+ */
+
+const newUpdateButton =
+    document.querySelector("#new-update-button");
+
+const updateEditor =
+    document.querySelector("#update-editor");
+
+const updateEditorTitle =
+    document.querySelector("#update-editor-title");
+
+const updateForm =
+    document.querySelector("#update-form");
+
+const updateCategoryInput =
+    document.querySelector("#update-category");
+
+const updateTitleInput =
+    document.querySelector("#update-title");
+
+const updateDescriptionInput =
+    document.querySelector("#update-description");
+
+const updateDateInput =
+    document.querySelector("#update-date");
+
+const updatePublishedInput =
+    document.querySelector("#update-published");
+
+const saveUpdateButton =
+    document.querySelector("#save-update-button");
+
+const cancelUpdateButton =
+    document.querySelector("#cancel-update-button");
+
+const updateStatus =
+    document.querySelector("#update-status");
+
+const updatesList =
+    document.querySelector("#updates-list");
+
 
 let currentIssues = [];
 let editingIssueNumber = null;
-
+let currentUpdates = [];
+let editingUpdateId = null;
 
 /*
  * ==========================================
@@ -264,6 +329,52 @@ async function handleUnauthorized(
     return true;
 }
 
+/*
+ * ==========================================
+ * ADMIN-TABS
+ * ==========================================
+ */
+
+function showAdminPanel(panel) {
+    issuesPanel.classList.add(
+        "hidden"
+    );
+
+    updatesPanel.classList.add(
+        "hidden"
+    );
+
+    issuesTab.classList.remove(
+        "active"
+    );
+
+    updatesTab.classList.remove(
+        "active"
+    );
+
+
+    panel.classList.remove(
+        "hidden"
+    );
+
+
+    if (panel === issuesPanel) {
+        issuesTab.classList.add(
+            "active"
+        );
+
+        return;
+    }
+
+
+    if (panel === updatesPanel) {
+        updatesTab.classList.add(
+            "active"
+        );
+
+        loadUpdates();
+    }
+}
 
 /*
  * ==========================================
@@ -832,6 +943,633 @@ async function deleteIssue(
     }
 }
 
+/*
+ * ==========================================
+ * AKTUELLES & TERMINE LADEN
+ * ==========================================
+ */
+
+async function loadUpdates() {
+    try {
+        updatesList.innerHTML = `
+            <div class="card loading-card">
+                Einträge werden geladen …
+            </div>
+        `;
+
+
+        const response =
+            await fetch(
+                `${API_URL}/admin/updates`,
+                {
+                    method: "GET",
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        currentUpdates =
+            Array.isArray(
+                data.updates
+            )
+                ? data.updates
+                : [];
+
+
+        renderUpdates();
+
+    } catch (error) {
+        console.error(error);
+
+        updatesList.innerHTML = `
+            <div class="card empty-state">
+                Die Einträge konnten nicht geladen werden.
+            </div>
+        `;
+    }
+}
+
+
+/*
+ * ==========================================
+ * AKTUELLES RENDERN
+ * ==========================================
+ */
+
+function renderUpdates() {
+    if (
+        currentUpdates.length === 0
+    ) {
+        updatesList.innerHTML = `
+            <div class="card empty-state">
+                Noch keine Einträge vorhanden.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    updatesList.innerHTML =
+        currentUpdates
+            .map(
+                update => `
+                    <article class="card update-admin-card">
+
+                        <div class="update-admin-info">
+
+                            <span class="update-badge">
+                                ${escapeHtml(
+                                    getUpdateCategoryLabel(
+                                        update.category
+                                    )
+                                )}
+                            </span>
+
+                            ${
+                                !update.isPublished
+                                    ? `
+                                        <span class="update-badge draft">
+                                            Entwurf
+                                        </span>
+                                    `
+                                    : ""
+                            }
+
+                            <p class="update-admin-meta">
+                                ${formatDate(update.date)}
+                            </p>
+
+                            <h3>
+                                ${escapeHtml(update.title)}
+                            </h3>
+
+                            <p class="update-admin-description">
+                                ${escapeHtml(
+                                    update.description || ""
+                                )}
+                            </p>
+
+                        </div>
+
+
+                        <div class="update-admin-actions">
+
+                            <button
+                                class="ghost-button edit-update-button"
+                                type="button"
+                                data-update="${escapeHtml(update.id)}"
+                            >
+                                Bearbeiten
+                            </button>
+
+                            <button
+                                class="danger-button delete-update-button"
+                                type="button"
+                                data-update="${escapeHtml(update.id)}"
+                            >
+                                Löschen
+                            </button>
+
+                        </div>
+
+                    </article>
+                `
+            )
+            .join("");
+
+
+    bindUpdateButtons();
+}
+
+
+function getUpdateCategoryLabel(
+    category
+) {
+    switch (category) {
+        case "school":
+            return "Aus der Schule";
+
+        case "external":
+            return "Rund um Schule & Bildung";
+
+        case "date":
+            return "Wichtiger Termin";
+
+        default:
+            return "Sonstiges";
+    }
+}
+
+
+/*
+ * ==========================================
+ * BUTTONS DER EINTRÄGE
+ * ==========================================
+ */
+
+function bindUpdateButtons() {
+    document
+        .querySelectorAll(
+            ".edit-update-button"
+        )
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        openEditUpdate(
+                            Number(
+                                button.dataset.update
+                            )
+                        );
+                    }
+                );
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".delete-update-button"
+        )
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        deleteUpdate(
+                            Number(
+                                button.dataset.update
+                            )
+                        );
+                    }
+                );
+            }
+        );
+}
+
+
+/*
+ * ==========================================
+ * NEUER EINTRAG
+ * ==========================================
+ */
+
+function openNewUpdate() {
+    editingUpdateId = null;
+
+    updateForm.reset();
+
+    updateCategoryInput.value =
+        "school";
+
+    updatePublishedInput.checked =
+        true;
+
+    updateEditorTitle.textContent =
+        "Neuer Eintrag";
+
+    saveUpdateButton.textContent =
+        "Eintrag veröffentlichen";
+
+    hideStatus(
+        updateStatus
+    );
+
+    updateEditor.classList.remove(
+        "hidden"
+    );
+
+    updateTitleInput.focus();
+
+
+    updateEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+/*
+ * ==========================================
+ * EINTRAG BEARBEITEN
+ * ==========================================
+ */
+
+function openEditUpdate(
+    updateId
+) {
+    const update =
+        currentUpdates.find(
+            item =>
+                Number(item.id) ===
+                updateId
+        );
+
+
+    if (!update) {
+        return;
+    }
+
+
+    editingUpdateId =
+        updateId;
+
+
+    updateForm.reset();
+
+
+    updateCategoryInput.value =
+        update.category;
+
+    updateTitleInput.value =
+        update.title ?? "";
+
+    updateDescriptionInput.value =
+        update.description ?? "";
+
+    updateDateInput.value =
+        update.date ?? "";
+
+    updatePublishedInput.checked =
+        Boolean(
+            update.isPublished
+        );
+
+
+    updateEditorTitle.textContent =
+        "Eintrag bearbeiten";
+
+
+    saveUpdateButton.textContent =
+        "Änderungen speichern";
+
+
+    hideStatus(
+        updateStatus
+    );
+
+
+    updateEditor.classList.remove(
+        "hidden"
+    );
+
+
+    updateTitleInput.focus();
+
+
+    updateEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+function closeUpdateEditor() {
+    editingUpdateId = null;
+
+    updateForm.reset();
+
+    updateEditor.classList.add(
+        "hidden"
+    );
+
+    hideStatus(
+        updateStatus
+    );
+}
+
+
+/*
+ * ==========================================
+ * EINTRAG SPEICHERN
+ * ==========================================
+ */
+
+updateForm.addEventListener(
+    "submit",
+    async event => {
+        event.preventDefault();
+
+
+        hideStatus(
+            updateStatus
+        );
+
+
+        const token =
+            getSessionToken();
+
+
+        if (!token) {
+            showMainSection(
+                loginSection
+            );
+
+            return;
+        }
+
+
+        const payload = {
+            category:
+                updateCategoryInput.value,
+
+            title:
+                updateTitleInput.value
+                    .trim(),
+
+            description:
+                updateDescriptionInput.value
+                    .trim(),
+
+            date:
+                updateDateInput.value,
+
+            isPublished:
+                updatePublishedInput.checked
+        };
+
+
+        saveUpdateButton.disabled =
+            true;
+
+
+        saveUpdateButton.textContent =
+            editingUpdateId === null
+                ? "Wird veröffentlicht …"
+                : "Wird gespeichert …";
+
+
+        try {
+            let response;
+
+
+            if (
+                editingUpdateId === null
+            ) {
+                response =
+                    await fetch(
+                        `${API_URL}/admin/updates`,
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                ...getAuthHeaders(),
+
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+            } else {
+                response =
+                    await fetch(
+                        `${API_URL}/admin/updates/${editingUpdateId}`,
+                        {
+                            method:
+                                "PUT",
+
+                            headers: {
+                                ...getAuthHeaders(),
+
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+            }
+
+
+            if (
+                await handleUnauthorized(
+                    response
+                )
+            ) {
+                return;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+                showStatus(
+                    updateStatus,
+                    data.error ??
+                        "Speichern fehlgeschlagen.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            showStatus(
+                updateStatus,
+                editingUpdateId === null
+                    ? "Eintrag wurde erfolgreich erstellt."
+                    : "Eintrag wurde erfolgreich aktualisiert.",
+                "success"
+            );
+
+
+            await loadUpdates();
+
+
+            setTimeout(
+                () => {
+                    closeUpdateEditor();
+                },
+                900
+            );
+
+        } catch (error) {
+            console.error(error);
+
+
+            showStatus(
+                updateStatus,
+                "Die Verbindung zum Server ist fehlgeschlagen.",
+                "error"
+            );
+
+        } finally {
+            saveUpdateButton.disabled =
+                false;
+
+
+            saveUpdateButton.textContent =
+                editingUpdateId === null
+                    ? "Eintrag veröffentlichen"
+                    : "Änderungen speichern";
+        }
+    }
+);
+
+
+/*
+ * ==========================================
+ * EINTRAG LÖSCHEN
+ * ==========================================
+ */
+
+async function deleteUpdate(
+    updateId
+) {
+    const update =
+        currentUpdates.find(
+            item =>
+                Number(item.id) ===
+                updateId
+        );
+
+
+    if (!update) {
+        return;
+    }
+
+
+    const confirmed =
+        window.confirm(
+            `"${update.title}" wirklich löschen?\n\nDer Eintrag wird dauerhaft entfernt.`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+        const response =
+            await fetch(
+                `${API_URL}/admin/updates/${updateId}`,
+                {
+                    method:
+                        "DELETE",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+            window.alert(
+                data.error ??
+                    "Der Eintrag konnte nicht gelöscht werden."
+            );
+
+            return;
+        }
+
+
+        if (
+            editingUpdateId ===
+            updateId
+        ) {
+            closeUpdateEditor();
+        }
+
+
+        await loadUpdates();
+
+    } catch (error) {
+        console.error(error);
+
+
+        window.alert(
+            "Die Verbindung zum Server ist fehlgeschlagen."
+        );
+    }
+}
 
 /*
  * ==========================================
@@ -1153,6 +1891,37 @@ newIssueButton.addEventListener(
 cancelEditButton.addEventListener(
     "click",
     closeIssueEditor
+);
+
+issuesTab.addEventListener(
+    "click",
+    () => {
+        showAdminPanel(
+            issuesPanel
+        );
+    }
+);
+
+
+updatesTab.addEventListener(
+    "click",
+    () => {
+        showAdminPanel(
+            updatesPanel
+        );
+    }
+);
+
+
+newUpdateButton.addEventListener(
+    "click",
+    openNewUpdate
+);
+
+
+cancelUpdateButton.addEventListener(
+    "click",
+    closeUpdateEditor
 );
 
 
