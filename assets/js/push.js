@@ -47,7 +47,7 @@ OneSignalDeferred.push(async function (OneSignal) {
 
             if (status) {
                 status.textContent =
-                    "Du erhältst eine Nachricht, sobald eine neue Ausgabe erscheint.";
+                    "Du erhältst eine Benachrichtigung bei neuen Ausgaben und wichtigen Terminen.";
             }
 
             return;
@@ -60,7 +60,7 @@ OneSignalDeferred.push(async function (OneSignal) {
 
         if (status) {
             status.textContent =
-                "Erhalte eine kurze Nachricht bei einer neuen Ausgabe.";
+                "Erhalte Benachrichtigungen bei neuen Ausgaben und wichtigen Terminen.";
         }
     }
 
