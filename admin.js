@@ -349,6 +349,9 @@ async function handleUnauthorized(
  */
 
 function showAdminPanel(panel) {
+    /*
+     * Alle Panels ausblenden
+     */
     issuesPanel.classList.add(
         "hidden"
     );
@@ -358,9 +361,13 @@ function showAdminPanel(panel) {
     );
 
     adminPanel.classList.add(
-    "hidden"
+        "hidden"
     );
 
+
+    /*
+     * Alle Tabs deaktivieren
+     */
     issuesTab.classList.remove(
         "active"
     );
@@ -369,13 +376,25 @@ function showAdminPanel(panel) {
         "active"
     );
 
+    adminTab.classList.remove(
+        "active"
+    );
 
+
+    /*
+     * Gewünschtes Panel anzeigen
+     */
     panel.classList.remove(
         "hidden"
     );
 
 
-    if (panel === issuesPanel) {
+    /*
+     * Passenden Tab aktivieren
+     */
+    if (
+        panel === issuesPanel
+    ) {
         issuesTab.classList.add(
             "active"
         );
@@ -384,22 +403,28 @@ function showAdminPanel(panel) {
     }
 
 
-    if (panel === updatesPanel) {
+    if (
+        panel === updatesPanel
+    ) {
         updatesTab.classList.add(
             "active"
         );
 
         loadUpdates();
+
+        return;
     }
 
-    if (panel === adminPanel) {
-    adminTab.classList.add(
-        "active"
-    );
 
-    return;
+    if (
+        panel === adminPanel
+    ) {
+        adminTab.classList.add(
+            "active"
+        );
     }
 }
+
 
 /*
  * ==========================================
