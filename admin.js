@@ -121,7 +121,46 @@ const newUserButton =
     document.querySelector("#new-user-button");
 
 const usersList =
-    document.querySelector("#users-list");    
+    document.querySelector("#users-list");
+    
+const userEditor =
+    document.querySelector("#user-editor");
+
+const userForm =
+    document.querySelector("#user-form");
+
+const userUsernameInput =
+    document.querySelector("#user-username");
+
+const userRoleInput =
+    document.querySelector("#user-role");
+
+const userPasswordInput =
+    document.querySelector("#user-password");
+
+const userPasswordRepeatInput =
+    document.querySelector("#user-password-repeat");
+
+const saveUserButton =
+    document.querySelector("#save-user-button");
+
+const cancelUserButton =
+    document.querySelector("#cancel-user-button");
+
+const userStatus =
+    document.querySelector("#user-status");
+
+const temporaryPasswordBox =
+    document.querySelector("#temporary-password-box");
+
+const temporaryPasswordUser =
+    document.querySelector("#temporary-password-user");
+
+const temporaryPasswordValue =
+    document.querySelector("#temporary-password-value");
+
+const closeTemporaryPasswordButton =
+    document.querySelector("#close-temporary-password");    
 
 
 /*
@@ -175,6 +214,7 @@ let editingIssueNumber = null;
 let currentUpdates = [];
 let editingUpdateId = null;
 let currentRole = null;
+let currentUsers = [];
 
 /*
  * ==========================================
@@ -422,6 +462,10 @@ function showAdminPanel(panel) {
         adminTab.classList.add(
             "active"
         );
+
+        loadUsers();
+
+        return;
     }
 }
 
@@ -1623,6 +1667,658 @@ async function deleteUpdate(
 
 /*
  * ==========================================
+ * BENUTZERVERWALTUNG
+ * ==========================================
+ */
+
+
+/*
+ * BENUTZER LADEN
+ */
+
+async function loadUsers() {
+    if (
+        currentRole !== "admin"
+    ) {
+        return;
+    }
+
+    try {
+        usersList.innerHTML = `
+            <div class="card loading-card">
+                Benutzer werden geladen …
+            </div>
+        `;
+
+        const response =
+            await fetch(
+                `${API_URL}/admin/users`,
+                {
+                    method: "GET",
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            usersList.innerHTML = `
+                <div class="card empty-state">
+                    ${escapeHtml(
+                        data.error ??
+                        "Benutzer konnten nicht geladen werden."
+                    )}
+                </div>
+            `;
+
+            return;
+        }
+
+        currentUsers =
+            Array.isArray(
+                data.users
+            )
+                ? data.users
+                : [];
+
+        renderUsers();
+
+    } catch (error) {
+        console.error(error);
+
+        usersList.innerHTML = `
+            <div class="card empty-state">
+                Benutzer konnten nicht geladen werden.
+            </div>
+        `;
+    }
+}
+
+
+/*
+ * BENUTZER ANZEIGEN
+ */
+
+function renderUsers() {
+    if (
+        currentUsers.length === 0
+    ) {
+        usersList.innerHTML = `
+            <div class="card empty-state">
+                Noch keine Benutzer vorhanden.
+            </div>
+        `;
+
+        return;
+    }
+
+    usersList.innerHTML =
+        currentUsers
+            .map(
+                user => `
+                    <article class="card user-admin-card">
+
+                        <div class="user-admin-info">
+
+                            <h3>
+                                ${escapeHtml(
+                                    user.username
+                                )}
+                            </h3>
+
+                            <p class="user-admin-meta">
+                                Benutzer-ID:
+                                ${escapeHtml(
+                                    user.id
+                                )}
+                            </p>
+
+                            <span
+                                class="user-role-badge ${
+                                    user.role === "admin"
+                                        ? "admin"
+                                        : ""
+                                }"
+                            >
+                                ${
+                                    user.role === "admin"
+                                        ? "Administrator"
+                                        : "Projektteilnehmer"
+                                }
+                            </span>
+
+                        </div>
+
+
+                        <div class="user-admin-actions">
+
+                            <button
+                                class="ghost-button change-role-button"
+                                type="button"
+                                data-user="${escapeHtml(user.id)}"
+                            >
+                                Rolle ändern
+                            </button>
+
+                            <button
+                                class="ghost-button reset-password-button"
+                                type="button"
+                                data-user="${escapeHtml(user.id)}"
+                            >
+                                Passwort zurücksetzen
+                            </button>
+
+                            <button
+                                class="danger-button delete-user-button"
+                                type="button"
+                                data-user="${escapeHtml(user.id)}"
+                            >
+                                Löschen
+                            </button>
+
+                        </div>
+
+                    </article>
+                `
+            )
+            .join("");
+
+    bindUserButtons();
+}
+
+
+/*
+ * BENUTZER-BUTTONS VERKNÜPFEN
+ */
+
+function bindUserButtons() {
+    document
+        .querySelectorAll(
+            ".change-role-button"
+        )
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        changeUserRole(
+                            Number(
+                                button.dataset.user
+                            )
+                        );
+                    }
+                );
+            }
+        );
+
+    document
+        .querySelectorAll(
+            ".reset-password-button"
+        )
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        resetUserPassword(
+                            Number(
+                                button.dataset.user
+                            )
+                        );
+                    }
+                );
+            }
+        );
+
+    document
+        .querySelectorAll(
+            ".delete-user-button"
+        )
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        deleteUser(
+                            Number(
+                                button.dataset.user
+                            )
+                        );
+                    }
+                );
+            }
+        );
+}
+
+
+/*
+ * FORMULAR FÜR NEUEN BENUTZER ÖFFNEN
+ */
+
+function openNewUser() {
+    userForm.reset();
+
+    userRoleInput.value =
+        "member";
+
+    hideStatus(
+        userStatus
+    );
+
+    temporaryPasswordBox.classList.add(
+        "hidden"
+    );
+
+    userEditor.classList.remove(
+        "hidden"
+    );
+
+    userUsernameInput.focus();
+
+    userEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+/*
+ * BENUTZERFORMULAR SCHLIESSEN
+ */
+
+function closeUserEditor() {
+    userForm.reset();
+
+    userEditor.classList.add(
+        "hidden"
+    );
+
+    hideStatus(
+        userStatus
+    );
+}
+
+
+/*
+ * BENUTZER ERSTELLEN
+ */
+
+userForm.addEventListener(
+    "submit",
+    async event => {
+        event.preventDefault();
+
+        hideStatus(
+            userStatus
+        );
+
+        const username =
+            userUsernameInput.value
+                .trim();
+
+        const role =
+            userRoleInput.value;
+
+        const password =
+            userPasswordInput.value;
+
+        const passwordRepeat =
+            userPasswordRepeatInput.value;
+
+        if (
+            password !==
+            passwordRepeat
+        ) {
+            showStatus(
+                userStatus,
+                "Die Passwörter stimmen nicht überein.",
+                "error"
+            );
+
+            return;
+        }
+
+        saveUserButton.disabled =
+            true;
+
+        saveUserButton.textContent =
+            "Wird erstellt …";
+
+        try {
+            const response =
+                await fetch(
+                    `${API_URL}/admin/users`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            ...getAuthHeaders(),
+
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                username,
+                                password,
+                                role
+                            })
+                    }
+                );
+
+            if (
+                await handleUnauthorized(
+                    response
+                )
+            ) {
+                return;
+            }
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+                showStatus(
+                    userStatus,
+                    data.error ??
+                        "Benutzer konnte nicht erstellt werden.",
+                    "error"
+                );
+
+                return;
+            }
+
+            showStatus(
+                userStatus,
+                `Benutzer "${data.user.username}" wurde erstellt.`,
+                "success"
+            );
+
+            await loadUsers();
+
+            setTimeout(
+                () => {
+                    closeUserEditor();
+                },
+                900
+            );
+
+        } catch (error) {
+            console.error(error);
+
+            showStatus(
+                userStatus,
+                "Die Verbindung zum Server ist fehlgeschlagen.",
+                "error"
+            );
+
+        } finally {
+            saveUserButton.disabled =
+                false;
+
+            saveUserButton.textContent =
+                "Benutzer erstellen";
+        }
+    }
+);
+
+
+/*
+ * ROLLE ÄNDERN
+ */
+
+async function changeUserRole(
+    userId
+) {
+    const user =
+        currentUsers.find(
+            item =>
+                Number(item.id) ===
+                userId
+        );
+
+    if (!user) {
+        return;
+    }
+
+    const newRole =
+        user.role === "admin"
+            ? "member"
+            : "admin";
+
+    const roleLabel =
+        newRole === "admin"
+            ? "Administrator"
+            : "Projektteilnehmer";
+
+    const confirmed =
+        window.confirm(
+            `"${user.username}" wirklich zu "${roleLabel}" ändern?`
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        const response =
+            await fetch(
+                `${API_URL}/admin/users/${userId}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        ...getAuthHeaders(),
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            role:
+                                newRole
+                        })
+                }
+            );
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            window.alert(
+                data.error ??
+                    "Die Rolle konnte nicht geändert werden."
+            );
+
+            return;
+        }
+
+        await loadUsers();
+
+    } catch (error) {
+        console.error(error);
+
+        window.alert(
+            "Die Verbindung zum Server ist fehlgeschlagen."
+        );
+    }
+}
+
+
+/*
+ * PASSWORT ZURÜCKSETZEN
+ */
+
+async function resetUserPassword(
+    userId
+) {
+    const user =
+        currentUsers.find(
+            item =>
+                Number(item.id) ===
+                userId
+        );
+
+    if (!user) {
+        return;
+    }
+
+    const confirmed =
+        window.confirm(
+            `Passwort von "${user.username}" wirklich zurücksetzen?`
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        const response =
+            await fetch(
+                `${API_URL}/admin/users/${userId}/reset-password`,
+                {
+                    method: "POST",
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            window.alert(
+                data.error ??
+                    "Das Passwort konnte nicht zurückgesetzt werden."
+            );
+
+            return;
+        }
+
+        temporaryPasswordUser.textContent =
+            data.username;
+
+        temporaryPasswordValue.textContent =
+            data.temporaryPassword;
+
+        temporaryPasswordBox.classList.remove(
+            "hidden"
+        );
+
+        temporaryPasswordBox.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        window.alert(
+            "Die Verbindung zum Server ist fehlgeschlagen."
+        );
+    }
+}
+
+
+/*
+ * BENUTZER LÖSCHEN
+ */
+
+async function deleteUser(
+    userId
+) {
+    const user =
+        currentUsers.find(
+            item =>
+                Number(item.id) ===
+                userId
+        );
+
+    if (!user) {
+        return;
+    }
+
+    const confirmed =
+        window.confirm(
+            `Benutzer "${user.username}" wirklich löschen?\n\nDer Zugang wird dauerhaft entfernt.`
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        const response =
+            await fetch(
+                `${API_URL}/admin/users/${userId}`,
+                {
+                    method: "DELETE",
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            window.alert(
+                data.error ??
+                    "Der Benutzer konnte nicht gelöscht werden."
+            );
+
+            return;
+        }
+
+        await loadUsers();
+
+    } catch (error) {
+        console.error(error);
+
+        window.alert(
+            "Die Verbindung zum Server ist fehlgeschlagen."
+        );
+    }
+}
+
+/*
+ * ==========================================
  * LOGIN
  * ==========================================
  */
@@ -1776,6 +2472,12 @@ logoutButton.addEventListener(
 
         currentUser.textContent =
             "";
+
+        currentRole = null;
+
+        adminTab.classList.add(
+            "hidden"
+        );    
 
         closeIssueEditor();
 
@@ -1986,6 +2688,33 @@ adminTab.addEventListener(
         showAdminPanel(
             adminPanel
         );
+    }
+);
+
+newUserButton.addEventListener(
+    "click",
+    openNewUser
+);
+
+
+cancelUserButton.addEventListener(
+    "click",
+    closeUserEditor
+);
+
+
+closeTemporaryPasswordButton.addEventListener(
+    "click",
+    () => {
+        temporaryPasswordBox.classList.add(
+            "hidden"
+        );
+
+        temporaryPasswordUser.textContent =
+            "";
+
+        temporaryPasswordValue.textContent =
+            "";
     }
 );
 

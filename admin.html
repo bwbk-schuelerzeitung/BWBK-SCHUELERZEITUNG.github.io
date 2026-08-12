@@ -191,46 +191,45 @@
             margin: 0;
         }
 
+/* =====================================
+   BUTTONS
+   ===================================== */
 
-        /* =====================================
-           BUTTONS
-           ===================================== */
+.primary-button,
+.secondary-button,
+.danger-button,
+.ghost-button {
+    border: 0;
+    border-radius: 9px;
 
-        .primary-button,
-        .secondary-button,
-        .danger-button,
-        .ghost-button {
-            border: 0;
-            border-radius: 9px;
+    padding: 10px 16px;
 
-            padding: 10px 16px;
+    font-weight: 700;
+}
 
-            font-weight: 700;
-        }
+.primary-button {
+    background: #222;
+    color: #fff;
+}
 
-        .primary-button {
-            background: #222;
-            color: #fff;
-        }
+.secondary-button {
+    background: #707070;
+    color: #fff;
+}
 
-        .secondary-button {
-            background: #707070;
-            color: #fff;
-        }
+.danger-button {
+    background: var(--danger);
+    color: #fff;
+}
 
-        .danger-button {
-            background: var(--danger);
-            color: #fff;
-        }
+.ghost-button {
+    background: #eeeeee;
+    color: #222;
+}
 
-        .ghost-button {
-            background: #eeeeee;
-            color: #222;
-        }
-
-        .full-button {
-            width: 100%;
-        }
+.full-button {
+    width: 100%;
+}        
 
 
         /* =====================================
@@ -463,6 +462,108 @@
             padding: 25px;
             text-align: center;
         }
+
+        /* =====================================
+   BENUTZERVERWALTUNG
+   ===================================== */
+
+.users-list {
+    display: grid;
+    gap: 16px;
+}
+
+.user-admin-card {
+    padding: 20px;
+
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+}
+
+.user-admin-info h3 {
+    margin: 0 0 8px;
+}
+
+.user-admin-meta {
+    margin: 0;
+
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.user-role-badge {
+    display: inline-block;
+
+    margin-top: 8px;
+    padding: 5px 9px;
+
+    background: #eeeeee;
+
+    border-radius: 999px;
+
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.user-role-badge.admin {
+    color: #ffffff;
+    background: #222222;
+}
+
+.user-admin-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    min-width: 180px;
+}
+
+.user-admin-actions button {
+    width: 100%;
+}
+
+.temporary-password {
+    margin-top: 18px;
+    padding: 16px;
+
+    background: #fff7d6;
+    border: 1px solid #ead789;
+    border-radius: 9px;
+}
+
+.temporary-password strong {
+    display: block;
+
+    margin-top: 7px;
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+
+    word-break: break-all;
+}
+
+@media (max-width: 760px) {
+    .user-admin-card {
+        grid-template-columns: 1fr;
+    }
+
+    .user-admin-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        min-width: 0;
+    }
+
+    .user-admin-actions > * {
+        flex: 1;
+    }
+}
 
 
         /* =====================================
@@ -697,7 +798,7 @@
         ></div>
 
     </section>
-
+ 
 
     <!-- =====================================
          LOGIN
@@ -1163,59 +1264,217 @@
 
 
         <!-- =================================
-             ADMINISTRATION
-             ================================= -->
+     ADMINISTRATION
+     ================================= -->
 
-        <div
-            id="admin-panel"
-            class="admin-panel hidden"
+<div
+    id="admin-panel"
+    class="admin-panel hidden"
+>
+
+    <div class="toolbar">
+
+        <h2>
+            Administration
+        </h2>
+
+        <button
+            id="new-user-button"
+            class="primary-button"
+            type="button"
         >
+            + Neuer Benutzer
+        </button>
 
-            <div class="toolbar">
+    </div>
 
-                <h2>
-                    Administration
-                </h2>
+
+    <!-- =================================
+         BENUTZER ERSTELLEN
+         ================================= -->
+
+    <section
+        id="user-editor"
+        class="card form-card hidden"
+    >
+
+        <h2>
+            Neuer Benutzer
+        </h2>
+
+
+        <form id="user-form">
+
+            <div class="form-group">
+
+                <label for="user-username">
+                    Benutzer-ID
+                </label>
+
+                <input
+                    id="user-username"
+                    name="username"
+                    type="text"
+                    minlength="3"
+                    autocomplete="off"
+                    required
+                >
+
+                <div class="form-hint">
+                    Diese ID wird später zum
+                    Anmelden verwendet.
+                </div>
 
             </div>
 
 
-            <section class="card form-card">
+            <div class="form-group">
 
-                <h2>
-                    Benutzerverwaltung
-                </h2>
+                <label for="user-role">
+                    Rolle
+                </label>
 
-                <p>
-                    Hier können Administratoren
-                    Benutzer anlegen, Rollen
-                    verwalten und Passwörter
-                    zurücksetzen.
-                </p>
-
-                <button
-                    id="new-user-button"
-                    class="primary-button"
-                    type="button"
+                <select
+                    id="user-role"
+                    name="role"
+                    required
                 >
-                    + Neuer Benutzer
-                </button>
 
-            </section>
+                    <option value="member">
+                        Projektteilnehmer
+                    </option>
+
+                    <option value="admin">
+                        Administrator
+                    </option>
+
+                </select>
+
+            </div>
 
 
-            <section
-                id="users-list"
-                class="issues-list"
-            >
+            <div class="form-group">
 
-                <div class="card empty-state">
-                    Benutzerverwaltung wird vorbereitet.
+                <label for="user-password">
+                    Startpasswort
+                </label>
+
+                <input
+                    id="user-password"
+                    name="password"
+                    type="password"
+                    minlength="12"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <div class="form-hint">
+                    Mindestens 12 Zeichen.
                 </div>
 
-            </section>
+            </div>
 
+
+            <div class="form-group">
+
+                <label for="user-password-repeat">
+                    Passwort wiederholen
+                </label>
+
+                <input
+                    id="user-password-repeat"
+                    name="password_repeat"
+                    type="password"
+                    minlength="12"
+                    autocomplete="new-password"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    id="save-user-button"
+                    class="primary-button"
+                    type="submit"
+                >
+                    Benutzer erstellen
+                </button>
+
+
+                <button
+                    id="cancel-user-button"
+                    class="ghost-button"
+                    type="button"
+                >
+                    Abbrechen
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <div
+            id="user-status"
+            class="status hidden"
+        ></div>
+
+    </section>
+
+
+    <!-- =================================
+         TEMPORÄRES PASSWORT
+         ================================= -->
+
+    <section
+        id="temporary-password-box"
+        class="temporary-password hidden"
+    >
+
+        <span>
+            Neues temporäres Passwort für
+            <strong id="temporary-password-user"></strong>
+        </span>
+
+        <strong
+            id="temporary-password-value"
+        ></strong>
+
+        <p class="form-hint">
+            Dieses Passwort wird nur jetzt angezeigt.
+            Gib es direkt an die betreffende Person weiter.
+        </p>
+
+        <button
+            id="close-temporary-password"
+            class="ghost-button"
+            type="button"
+        >
+            Schließen
+        </button>
+
+    </section>
+
+
+    <!-- =================================
+         BENUTZERLISTE
+         ================================= -->
+
+    <section
+        id="users-list"
+        class="users-list"
+    >
+
+        <div class="card loading-card">
+            Benutzer werden geladen …
         </div>
+
+    </section>
+
+</div>
 
     </section>
 
