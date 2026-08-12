@@ -46,7 +46,7 @@ async function loadIssues() {
         );
 
         renderArchive(
-            sortedIssues.slice(1),
+            sortedIssues.slice(1, 4),
             archiveContainer
         );
 
@@ -137,9 +137,16 @@ function renderArchive(issues, container) {
                 String(issue.number)
             );
 
+            const readerUrl =
+                createReaderUrl(issue);
+
             return `
-                <article class="archive-card">
-                    <div class="archive-cover">
+                <a
+                    class="archive-row"
+                    href="${readerUrl}"
+                    data-count-view="${issueNumber}"
+                >
+                    <div class="archive-row-cover">
                         <img
                             src="${escapeHtml(issue.cover)}"
                             alt="Titelbild: ${escapeHtml(issue.title)}"
@@ -147,14 +154,17 @@ function renderArchive(issues, container) {
                         >
                     </div>
 
-                    <div class="archive-content">
+                    <div class="archive-row-content">
+                        <p class="archive-row-number">
+                            Ausgabe ${issueNumber}
+                        </p>
+
                         <h3>
                             ${escapeHtml(issue.title)}
                         </h3>
 
-                        <p>
-                            Ausgabe ${issueNumber}
-                            · ${formatDate(issue.publishedAt)}
+                        <p class="archive-row-meta">
+                            ${formatDate(issue.publishedAt)}
                         </p>
 
                         <p
@@ -162,19 +172,32 @@ function renderArchive(issues, container) {
                             data-view-count="${issueNumber}"
                             hidden
                         ></p>
-
-                        <a
-                            class="archive-button"
-                            href="${createReaderUrl(issue)}"
-                            data-count-view="${issueNumber}"
-                        >
-                            Ausgabe öffnen →
-                        </a>
                     </div>
-                </article>
+
+                    <div
+                        class="archive-row-arrow"
+                        aria-hidden="true"
+                    >
+                        →
+                    </div>
+                </a>
             `;
         })
         .join("");
+
+    container.insertAdjacentHTML(
+        "beforeend",
+        `
+            <div class="archive-all-link-wrapper">
+                <a
+                    class="archive-all-link"
+                    href="archiv.html"
+                >
+                    Alle Ausgaben ansehen →
+                </a>
+            </div>
+        `
+    );
 }
 
 function createReaderUrl(issue) {
