@@ -160,7 +160,43 @@ const temporaryPasswordValue =
     document.querySelector("#temporary-password-value");
 
 const closeTemporaryPasswordButton =
-    document.querySelector("#close-temporary-password");    
+    document.querySelector("#close-temporary-password");
+    
+const galleryTab =
+    document.querySelector("#gallery-tab");
+
+const galleryPanel =
+    document.querySelector("#gallery-panel");
+
+const newGalleryButton =
+    document.querySelector("#new-gallery-button");
+
+const galleryEditor =
+    document.querySelector("#gallery-editor");
+
+const galleryForm =
+    document.querySelector("#gallery-form");
+
+const galleryTitleInput =
+    document.querySelector("#gallery-title");
+
+const galleryDescriptionInput =
+    document.querySelector("#gallery-description");
+
+const galleryImageInput =
+    document.querySelector("#gallery-image");
+
+const saveGalleryButton =
+    document.querySelector("#save-gallery-button");
+
+const cancelGalleryButton =
+    document.querySelector("#cancel-gallery-button");
+
+const galleryStatus =
+    document.querySelector("#gallery-status");
+
+const galleryList =
+    document.querySelector("#gallery-list");
 
 
 /*
@@ -215,6 +251,7 @@ let currentUpdates = [];
 let editingUpdateId = null;
 let currentRole = null;
 let currentUsers = [];
+let currentGallery = [];
 
 /*
  * ==========================================
@@ -404,6 +441,10 @@ function showAdminPanel(panel) {
         "hidden"
     );
 
+    galleryPanel.classList.add(
+    "hidden"
+    );
+
 
     /*
      * Alle Tabs deaktivieren
@@ -418,6 +459,10 @@ function showAdminPanel(panel) {
 
     adminTab.classList.remove(
         "active"
+    );
+
+    galleryPanel.classList.add(
+    "hidden"
     );
 
 
@@ -464,6 +509,18 @@ function showAdminPanel(panel) {
         );
 
         loadUsers();
+
+        return;
+    }
+
+    if (
+        panel === galleryPanel
+    ) {
+        galleryTab.classList.add(
+            "active"
+        );
+
+        loadGallery();
 
         return;
     }
@@ -2319,6 +2376,443 @@ async function deleteUser(
 
 /*
  * ==========================================
+ * GALERIE
+ * ==========================================
+ */
+
+
+/*
+ * GALERIE LADEN
+ */
+
+async function loadGallery() {
+    try {
+        galleryList.innerHTML = `
+            <div class="card loading-card">
+                Galerie wird geladen …
+            </div>
+        `;
+
+        const response =
+            await fetch(
+                `${API_URL}/admin/gallery`,
+                {
+                    method: "GET",
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            galleryList.innerHTML = `
+                <div class="card empty-state">
+                    ${escapeHtml(
+                        data.error ??
+                        "Galerie konnte nicht geladen werden."
+                    )}
+                </div>
+            `;
+
+            return;
+        }
+
+        currentGallery =
+            Array.isArray(
+                data.gallery
+            )
+                ? data.gallery
+                : [];
+
+        renderGallery();
+
+    } catch (error) {
+        console.error(error);
+
+        galleryList.innerHTML = `
+            <div class="card empty-state">
+                Die Galerie konnte nicht geladen werden.
+            </div>
+        `;
+    }
+}
+
+
+/*
+ * GALERIE ANZEIGEN
+ */
+
+function renderGallery() {
+    if (
+        currentGallery.length === 0
+    ) {
+        galleryList.innerHTML = `
+            <div class="card empty-state">
+                Noch keine Fotos in der Galerie.
+            </div>
+        `;
+
+        return;
+    }
+
+    galleryList.innerHTML =
+        currentGallery
+            .map(
+                item => `
+                    <article class="card gallery-admin-card">
+
+                        <img
+                            class="gallery-admin-image"
+                            src="${escapeHtml(item.image)}"
+                            alt="${escapeHtml(item.title)}"
+                            loading="lazy"
+                        >
+
+                        <div class="gallery-admin-info">
+
+                            <h3>
+                                ${escapeHtml(item.title)}
+                            </h3>
+
+                            <p class="gallery-admin-description">
+                                ${escapeHtml(
+                                    item.description || ""
+                                )}
+                            </p>
+
+                        </div>
+
+                        <div class="gallery-admin-actions">
+
+                            <button
+                                class="danger-button delete-gallery-button"
+                                type="button"
+                                data-gallery="${escapeHtml(item.id)}"
+                            >
+                                Löschen
+                            </button>
+
+                        </div>
+
+                    </article>
+                `
+            )
+            .join("");
+
+    bindGalleryButtons();
+}
+
+
+/*
+ * GALERIE-BUTTONS
+ */
+
+function bindGalleryButtons() {
+    document
+        .querySelectorAll(
+            ".delete-gallery-button"
+        )
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        deleteGalleryItem(
+                            Number(
+                                button.dataset.gallery
+                            )
+                        );
+                    }
+                );
+            }
+        );
+}
+
+
+/*
+ * UPLOAD-FORMULAR ÖFFNEN
+ */
+
+function openGalleryEditor() {
+    galleryForm.reset();
+
+    hideStatus(
+        galleryStatus
+    );
+
+    galleryEditor.classList.remove(
+        "hidden"
+    );
+
+    galleryTitleInput.focus();
+
+    galleryEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+/*
+ * UPLOAD-FORMULAR SCHLIESSEN
+ */
+
+function closeGalleryEditor() {
+    galleryForm.reset();
+
+    galleryEditor.classList.add(
+        "hidden"
+    );
+
+    hideStatus(
+        galleryStatus
+    );
+}
+
+
+/*
+ * FOTO HOCHLADEN
+ */
+
+galleryForm.addEventListener(
+    "submit",
+    async event => {
+        event.preventDefault();
+
+        hideStatus(
+            galleryStatus
+        );
+
+        const image =
+            galleryImageInput.files[0];
+
+        if (!image) {
+            showStatus(
+                galleryStatus,
+                "Bitte wähle ein Foto aus.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /*
+         * Zusätzliche Prüfung im Browser.
+         * Der Worker prüft ebenfalls.
+         */
+
+        const maxImageSize =
+            4 * 1024 * 1024;
+
+        if (
+            image.size >
+            maxImageSize
+        ) {
+            showStatus(
+                galleryStatus,
+                "Das Bild darf maximal 4 MB groß sein.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "title",
+            galleryTitleInput.value.trim()
+        );
+
+        formData.append(
+            "description",
+            galleryDescriptionInput.value.trim()
+        );
+
+        formData.append(
+            "image",
+            image
+        );
+
+
+        saveGalleryButton.disabled =
+            true;
+
+        saveGalleryButton.textContent =
+            "Wird hochgeladen …";
+
+
+        try {
+            const response =
+                await fetch(
+                    `${API_URL}/admin/gallery`,
+                    {
+                        method: "POST",
+
+                        headers:
+                            getAuthHeaders(),
+
+                        body:
+                            formData
+                    }
+                );
+
+
+            if (
+                await handleUnauthorized(
+                    response
+                )
+            ) {
+                return;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+                showStatus(
+                    galleryStatus,
+                    data.error ??
+                        "Foto konnte nicht hochgeladen werden.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            showStatus(
+                galleryStatus,
+                "Foto wurde erfolgreich hochgeladen.",
+                "success"
+            );
+
+
+            await loadGallery();
+
+
+            setTimeout(
+                () => {
+                    closeGalleryEditor();
+                },
+                900
+            );
+
+        } catch (error) {
+            console.error(error);
+
+            showStatus(
+                galleryStatus,
+                "Die Verbindung zum Server ist fehlgeschlagen.",
+                "error"
+            );
+
+        } finally {
+            saveGalleryButton.disabled =
+                false;
+
+            saveGalleryButton.textContent =
+                "Foto hochladen";
+        }
+    }
+);
+
+
+/*
+ * GALERIE-BILD LÖSCHEN
+ */
+
+async function deleteGalleryItem(
+    galleryId
+) {
+    const item =
+        currentGallery.find(
+            galleryItem =>
+                Number(
+                    galleryItem.id
+                ) === galleryId
+        );
+
+    if (!item) {
+        return;
+    }
+
+
+    const confirmed =
+        window.confirm(
+            `"${item.title}" wirklich aus der Galerie löschen?\n\nDas Bild wird auch aus dem Speicher entfernt.`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+        const response =
+            await fetch(
+                `${API_URL}/admin/gallery/${galleryId}`,
+                {
+                    method: "DELETE",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+            window.alert(
+                data.error ??
+                    "Das Foto konnte nicht gelöscht werden."
+            );
+
+            return;
+        }
+
+
+        await loadGallery();
+
+    } catch (error) {
+        console.error(error);
+
+        window.alert(
+            "Die Verbindung zum Server ist fehlgeschlagen."
+        );
+    }
+}
+
+/*
+ * ==========================================
  * LOGIN
  * ==========================================
  */
@@ -2716,6 +3210,27 @@ closeTemporaryPasswordButton.addEventListener(
         temporaryPasswordValue.textContent =
             "";
     }
+);
+
+galleryTab.addEventListener(
+    "click",
+    () => {
+        showAdminPanel(
+            galleryPanel
+        );
+    }
+);
+
+
+newGalleryButton.addEventListener(
+    "click",
+    openGalleryEditor
+);
+
+
+cancelGalleryButton.addEventListener(
+    "click",
+    closeGalleryEditor
 );
 
 

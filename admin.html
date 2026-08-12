@@ -565,6 +565,68 @@
     }
 }
 
+/* =====================================
+   GALERIE – REDAKTIONSBEREICH
+   ===================================== */
+
+.gallery-admin-list {
+    display: grid;
+    gap: 16px;
+}
+
+.gallery-admin-card {
+    padding: 20px;
+
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 20px;
+    align-items: center;
+}
+
+.gallery-admin-image {
+    width: 140px;
+    height: 100px;
+
+    object-fit: cover;
+
+    border-radius: 10px;
+    background: #eeeeee;
+}
+
+.gallery-admin-info h3 {
+    margin: 0 0 8px;
+}
+
+.gallery-admin-description {
+    margin: 0;
+
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.gallery-admin-actions {
+    min-width: 120px;
+}
+
+.gallery-admin-actions button {
+    width: 100%;
+}
+
+@media (max-width: 760px) {
+    .gallery-admin-card {
+        grid-template-columns: 90px 1fr;
+    }
+
+    .gallery-admin-image {
+        width: 90px;
+        height: 70px;
+    }
+
+    .gallery-admin-actions {
+        grid-column: 1 / -1;
+    }
+}
+
 
         /* =====================================
            MOBIL
@@ -899,6 +961,13 @@
                 Aktuelles & Termine
             </button>
 
+            <button
+                id="gallery-tab"
+                class="admin-tab"
+                type="button"
+            >
+                Galerie
+            </button>
 
             <button
                 id="admin-tab"
@@ -1261,6 +1330,148 @@
             ></section>
 
         </div>
+
+<!-- =================================
+     GALERIE
+     ================================= -->
+
+<div
+    id="gallery-panel"
+    class="admin-panel hidden"
+>
+
+    <div class="toolbar">
+
+        <h2>
+            Galerie
+        </h2>
+
+        <button
+            id="new-gallery-button"
+            class="primary-button"
+            type="button"
+        >
+            + Foto hochladen
+        </button>
+
+    </div>
+
+
+    <!-- =================================
+         GALERIE-UPLOAD
+         ================================= -->
+
+    <section
+        id="gallery-editor"
+        class="card form-card hidden"
+    >
+
+        <h2>
+            Neues Foto
+        </h2>
+
+
+        <form id="gallery-form">
+
+            <div class="form-group">
+
+                <label for="gallery-title">
+                    Titel
+                </label>
+
+                <input
+                    id="gallery-title"
+                    name="title"
+                    type="text"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="gallery-description">
+                    Beschreibung
+                </label>
+
+                <textarea
+                    id="gallery-description"
+                    name="description"
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="gallery-image">
+                    Foto
+                </label>
+
+                <input
+                    id="gallery-image"
+                    name="image"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    required
+                >
+
+                <div class="form-hint">
+                    JPG, PNG oder WebP · maximal 4 MB
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    id="save-gallery-button"
+                    class="primary-button"
+                    type="submit"
+                >
+                    Foto hochladen
+                </button>
+
+
+                <button
+                    id="cancel-gallery-button"
+                    class="ghost-button"
+                    type="button"
+                >
+                    Abbrechen
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <div
+            id="gallery-status"
+            class="status hidden"
+        ></div>
+
+    </section>
+
+
+    <!-- =================================
+         GALERIE-LISTE
+         ================================= -->
+
+    <section
+        id="gallery-list"
+        class="gallery-admin-list"
+    >
+
+        <div class="card loading-card">
+            Galerie wird geladen …
+        </div>
+
+    </section>
+
+</div>
 
 
         <!-- =================================
