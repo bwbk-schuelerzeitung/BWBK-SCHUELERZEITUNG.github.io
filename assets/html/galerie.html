@@ -10,26 +10,23 @@
 
     <meta
         name="description"
-        content="Archiv von BWBK Aktuell – der Schülerzeitung des Bergischen Weiterbildungskollegs"
+        content="Bildergalerie von BWBK Aktuell – der Schülerzeitung des Bergischen Weiterbildungskollegs"
     >
 
     <meta name="theme-color" content="#0f172a">
 
-    <title>Archiv – BWBK Aktuell</title>
+    <title>Galerie – BWBK Aktuell</title>
 
-    <!-- CSS liegt im Hauptverzeichnis -->
     <link
         rel="stylesheet"
-        href="../../style.css?v=6"
+        href="../../style.css?v=7"
     >
 
-    <!-- Manifest liegt im Hauptverzeichnis -->
     <link
         rel="manifest"
         href="../../manifest.json"
     >
 
-    <!-- Icons liegen unter assets/icons -->
     <link
         rel="apple-touch-icon"
         href="../icons/icon-192.png"
@@ -41,14 +38,8 @@
         href="../icons/icon-192.png"
     >
 
-    <!-- JavaScript liegt unter assets/js -->
     <script
-        src="../js/archive.js?v=1"
-        defer
-    ></script>
-
-    <script
-        src="../js/views.js?v=1"
+        src="../js/galerie.js?v=1"
         defer
     ></script>
 </head>
@@ -115,33 +106,98 @@
 
 <main>
 
-    <section class="section archive-page-section">
+    <section class="section gallery-page-section">
 
         <div class="section-heading">
 
             <p class="eyebrow">
-                Alle Veröffentlichungen
+                Schulleben in Bildern
             </p>
 
             <h1>
-                Archiv
+                Galerie
             </h1>
+
+            <p class="gallery-intro">
+                Eindrücke aus Projekten, Veranstaltungen,
+                Aktionen und unserem Schulalltag.
+            </p>
 
         </div>
 
 
         <div
-            id="archive"
-            class="archive-grid"
+            id="public-gallery"
+            class="public-gallery-grid"
         >
             <p class="status-message">
-                Ausgaben werden geladen …
+                Galerie wird geladen …
             </p>
         </div>
 
     </section>
 
 </main>
+
+
+<!-- LIGHTBOX -->
+
+<div
+    id="gallery-lightbox"
+    class="gallery-lightbox hidden"
+    aria-hidden="true"
+>
+
+    <button
+        id="gallery-lightbox-close"
+        class="gallery-lightbox-close"
+        type="button"
+        aria-label="Bild schließen"
+    >
+        ×
+    </button>
+
+
+    <button
+        id="gallery-lightbox-previous"
+        class="gallery-lightbox-navigation gallery-lightbox-previous"
+        type="button"
+        aria-label="Vorheriges Bild"
+    >
+        ←
+    </button>
+
+
+    <figure class="gallery-lightbox-content">
+
+        <img
+            id="gallery-lightbox-image"
+            class="gallery-lightbox-image"
+            src=""
+            alt=""
+        >
+
+        <figcaption class="gallery-lightbox-caption">
+
+            <h2 id="gallery-lightbox-title"></h2>
+
+            <p id="gallery-lightbox-description"></p>
+
+        </figcaption>
+
+    </figure>
+
+
+    <button
+        id="gallery-lightbox-next"
+        class="gallery-lightbox-navigation gallery-lightbox-next"
+        type="button"
+        aria-label="Nächstes Bild"
+    >
+        →
+    </button>
+
+</div>
 
 
 <footer class="site-footer">
