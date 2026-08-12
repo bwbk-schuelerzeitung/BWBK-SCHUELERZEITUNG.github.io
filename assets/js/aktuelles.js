@@ -1,45 +1,11 @@
 "use strict";
 
 
-/*
- * VORLÄUFIGE TESTDATEN
- *
- * Diese Daten werden später durch die API ersetzt.
- * Der Redaktionsbereich wird die Einträge dann
- * erstellen, bearbeiten und löschen können.
- */
-
-const updates = [
-    {
-        id: 1,
-        category: "school",
-        title: "Willkommen bei BWBK Aktuell",
-        description:
-            "Hier erscheinen künftig wichtige Informationen und Neuigkeiten aus unserem Schulalltag.",
-        date: "2026-08-12"
-    },
-
-    {
-        id: 2,
-        category: "external",
-        title: "Informationen aus Wuppertal",
-        description:
-            "An dieser Stelle können später externe Veranstaltungen, Bildungsangebote und weitere interessante Hinweise veröffentlicht werden.",
-        date: "2026-08-15"
-    },
-
-    {
-        id: 3,
-        category: "date",
-        title: "Beispieltermin",
-        description:
-            "Dieser Termin dient zunächst als Beispiel für die neue Terminübersicht.",
-        date: "2026-09-01"
-    }
-];
+const API_URL =
+    "https://bwbk-api.roniiminimal.workers.dev";
 
 
-function loadUpdates() {
+async function loadUpdates() {
     const schoolContainer =
         document.querySelector("#school-updates");
 
@@ -50,49 +16,152 @@ function loadUpdates() {
         document.querySelector("#important-dates");
 
 
-    const schoolUpdates = updates
-        .filter(
-            (update) =>
-                update.category === "school"
-        )
-        .sort(sortNewestFirst);
+    /*
+     * Während die Daten geladen werden,
+     * zeigen wir einen kurzen Status an.
+     */
+
+    schoolContainer.innerHTML = `
+        <p class="status-message">
+            Informationen werden geladen …
+        </p>
+    `;
+
+    externalContainer.innerHTML = `
+        <p class="status-message">
+            Informationen werden geladen …
+        </p>
+    `;
+
+    datesContainer.innerHTML = `
+        <p class="status-message">
+            Termine werden geladen …
+        </p>
+    `;
 
 
-    const externalUpdates = updates
-        .filter(
-            (update) =>
-                update.category === "external"
-        )
-        .sort(sortNewestFirst);
+    try {
+        const response =
+            await fetch(
+                `${API_URL}/updates`
+            );
 
 
-    const importantDates = updates
-        .filter(
-            (update) =>
-                update.category === "date"
-        )
-        .sort(sortOldestFirst);
+        if (!response.ok) {
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
 
 
-    renderUpdates(
-        schoolUpdates,
-        schoolContainer
-    );
+        const data =
+            await response.json();
 
-    renderUpdates(
-        externalUpdates,
-        externalContainer
-    );
 
-    renderDates(
-        importantDates,
-        datesContainer
-    );
+        const updates =
+            Array.isArray(
+                data.updates
+            )
+                ? data.updates
+                : [];
+
+
+        /*
+         * Die Einträge werden anhand ihrer
+         * Kategorie auf die drei Bereiche
+         * der Seite verteilt.
+         */
+
+        const schoolUpdates =
+            updates
+                .filter(
+                    update =>
+                        update.category ===
+                        "school"
+                )
+                .sort(
+                    sortNewestFirst
+                );
+
+
+        const externalUpdates =
+            updates
+                .filter(
+                    update =>
+                        update.category ===
+                        "external"
+                )
+                .sort(
+                    sortNewestFirst
+                );
+
+
+        const importantDates =
+            updates
+                .filter(
+                    update =>
+                        update.category ===
+                        "date"
+                )
+                .sort(
+                    sortOldestFirst
+                );
+
+
+        renderUpdates(
+            schoolUpdates,
+            schoolContainer
+        );
+
+
+        renderUpdates(
+            externalUpdates,
+            externalContainer
+        );
+
+
+        renderDates(
+            importantDates,
+            datesContainer
+        );
+
+    } catch (error) {
+        console.error(error);
+
+
+        schoolContainer.innerHTML = `
+            <p class="error-message">
+                Die Informationen konnten
+                leider nicht geladen werden.
+            </p>
+        `;
+
+
+        externalContainer.innerHTML = `
+            <p class="error-message">
+                Die Informationen konnten
+                leider nicht geladen werden.
+            </p>
+        `;
+
+
+        datesContainer.innerHTML = `
+            <p class="error-message">
+                Die Termine konnten
+                leider nicht geladen werden.
+            </p>
+        `;
+    }
 }
 
 
-function renderUpdates(updatesToRender, container) {
-    if (updatesToRender.length === 0) {
+function renderUpdates(
+    updatesToRender,
+    container
+) {
+    if (
+        updatesToRender.length === 0
+    ) {
         container.innerHTML = `
             <p class="status-message">
                 Momentan gibt es hier
@@ -104,32 +173,40 @@ function renderUpdates(updatesToRender, container) {
     }
 
 
-    container.innerHTML = updatesToRender
-        .map((update) => {
-            return `
-                <article class="update-card">
+    container.innerHTML =
+        updatesToRender
+            .map(
+                update => `
+                    <article class="update-card">
 
-                    <p class="update-date">
-                        ${formatDate(update.date)}
-                    </p>
+                        <p class="update-date">
+                            ${formatDate(update.date)}
+                        </p>
 
-                    <h3 class="update-title">
-                        ${escapeHtml(update.title)}
-                    </h3>
+                        <h3 class="update-title">
+                            ${escapeHtml(update.title)}
+                        </h3>
 
-                    <p class="update-description">
-                        ${escapeHtml(update.description)}
-                    </p>
+                        <p class="update-description">
+                            ${escapeHtml(
+                                update.description || ""
+                            )}
+                        </p>
 
-                </article>
-            `;
-        })
-        .join("");
+                    </article>
+                `
+            )
+            .join("");
 }
 
 
-function renderDates(dates, container) {
-    if (dates.length === 0) {
+function renderDates(
+    dates,
+    container
+) {
+    if (
+        dates.length === 0
+    ) {
         container.innerHTML = `
             <p class="status-message">
                 Momentan sind keine wichtigen
@@ -141,48 +218,63 @@ function renderDates(dates, container) {
     }
 
 
-    container.innerHTML = dates
-        .map((date) => {
-            return `
-                <article class="date-row">
+    container.innerHTML =
+        dates
+            .map(
+                date => `
+                    <article class="date-row">
 
-                    <div class="date-calendar">
-                        <span class="date-day">
-                            ${formatDay(date.date)}
-                        </span>
+                        <div class="date-calendar">
 
-                        <span class="date-month">
-                            ${formatMonth(date.date)}
-                        </span>
-                    </div>
+                            <span class="date-day">
+                                ${formatDay(date.date)}
+                            </span>
+
+                            <span class="date-month">
+                                ${formatMonth(date.date)}
+                            </span>
+
+                        </div>
 
 
-                    <div class="date-content">
+                        <div class="date-content">
 
-                        <h3>
-                            ${escapeHtml(date.title)}
-                        </h3>
+                            <h3>
+                                ${escapeHtml(date.title)}
+                            </h3>
 
-                        ${
-                            date.description
-                                ? `
-                                    <p>
-                                        ${escapeHtml(date.description)}
-                                    </p>
-                                `
-                                : ""
-                        }
+                            ${
+                                date.description
+                                    ? `
+                                        <p>
+                                            ${escapeHtml(
+                                                date.description
+                                            )}
+                                        </p>
+                                    `
+                                    : ""
+                            }
 
-                    </div>
+                        </div>
 
-                </article>
-            `;
-        })
-        .join("");
+                    </article>
+                `
+            )
+            .join("");
 }
 
 
-function sortNewestFirst(first, second) {
+/*
+ * ==========================================
+ * SORTIERUNG
+ * ==========================================
+ */
+
+
+function sortNewestFirst(
+    first,
+    second
+) {
     return (
         new Date(second.date) -
         new Date(first.date)
@@ -190,7 +282,10 @@ function sortNewestFirst(first, second) {
 }
 
 
-function sortOldestFirst(first, second) {
+function sortOldestFirst(
+    first,
+    second
+) {
     return (
         new Date(first.date) -
         new Date(second.date)
@@ -198,7 +293,25 @@ function sortOldestFirst(first, second) {
 }
 
 
-function formatDate(dateString) {
+/*
+ * ==========================================
+ * DATUM
+ * ==========================================
+ */
+
+
+function createLocalDate(
+    dateString
+) {
+    return new Date(
+        `${dateString}T00:00:00`
+    );
+}
+
+
+function formatDate(
+    dateString
+) {
     return new Intl.DateTimeFormat(
         "de-DE",
         {
@@ -207,37 +320,58 @@ function formatDate(dateString) {
             year: "numeric"
         }
     ).format(
-        new Date(dateString)
+        createLocalDate(
+            dateString
+        )
     );
 }
 
 
-function formatDay(dateString) {
+function formatDay(
+    dateString
+) {
     return new Intl.DateTimeFormat(
         "de-DE",
         {
             day: "2-digit"
         }
     ).format(
-        new Date(dateString)
+        createLocalDate(
+            dateString
+        )
     );
 }
 
 
-function formatMonth(dateString) {
+function formatMonth(
+    dateString
+) {
     return new Intl.DateTimeFormat(
         "de-DE",
         {
             month: "short"
         }
     )
-        .format(new Date(dateString))
+        .format(
+            createLocalDate(
+                dateString
+            )
+        )
         .replace(".", "")
         .toUpperCase();
 }
 
 
-function escapeHtml(value) {
+/*
+ * ==========================================
+ * SICHERE HTML-AUSGABE
+ * ==========================================
+ */
+
+
+function escapeHtml(
+    value
+) {
     return String(value)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
@@ -245,6 +379,13 @@ function escapeHtml(value) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
+
+
+/*
+ * ==========================================
+ * START
+ * ==========================================
+ */
 
 
 loadUpdates();
