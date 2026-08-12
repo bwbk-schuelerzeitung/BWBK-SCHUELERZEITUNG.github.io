@@ -678,6 +678,14 @@ select {
             Aktuelles & Termine
         </button>
 
+        <button
+            id="admin-tab"
+            class="admin-tab hidden"
+            type="button"
+        >
+            Admin
+        </button>
+
     </div>
 
 
@@ -1001,6 +1009,46 @@ select {
                 id="update-status"
                 class="status hidden"
             ></div>
+
+            <div
+    id="admin-panel"
+    class="admin-panel hidden"
+>
+
+    <div class="toolbar">
+        <h2>Administration</h2>
+    </div>
+
+    <section class="card form-card">
+
+        <h2>Benutzerverwaltung</h2>
+
+        <p>
+            Hier können Administratoren später
+            Benutzer anlegen, Rollen verwalten
+            und Passwörter zurücksetzen.
+        </p>
+
+        <button
+            id="new-user-button"
+            class="primary-button"
+            type="button"
+        >
+            + Neuer Benutzer
+        </button>
+
+    </section>
+
+    <section
+        id="users-list"
+        class="issues-list"
+    >
+        <div class="card empty-state">
+            Benutzerverwaltung wird vorbereitet.
+        </div>
+    </section>
+
+</div>
 
         </section>
 

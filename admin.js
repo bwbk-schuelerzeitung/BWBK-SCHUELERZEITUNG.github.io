@@ -111,6 +111,18 @@ const issuesPanel =
 const updatesPanel =
     document.querySelector("#updates-panel");
 
+const adminTab =
+    document.querySelector("#admin-tab");
+
+const adminPanel =
+    document.querySelector("#admin-panel");
+
+const newUserButton =
+    document.querySelector("#new-user-button");
+
+const usersList =
+    document.querySelector("#users-list");    
+
 
 /*
  * ==========================================
@@ -162,6 +174,7 @@ let currentIssues = [];
 let editingIssueNumber = null;
 let currentUpdates = [];
 let editingUpdateId = null;
+let currentRole = null;
 
 /*
  * ==========================================
@@ -344,6 +357,10 @@ function showAdminPanel(panel) {
         "hidden"
     );
 
+    adminPanel.classList.add(
+    "hidden"
+    );
+
     issuesTab.classList.remove(
         "active"
     );
@@ -373,6 +390,14 @@ function showAdminPanel(panel) {
         );
 
         loadUpdates();
+    }
+
+    if (panel === adminPanel) {
+    adminTab.classList.add(
+        "active"
+    );
+
+    return;
     }
 }
 
@@ -1924,6 +1949,21 @@ cancelUpdateButton.addEventListener(
     closeUpdateEditor
 );
 
+adminTab.addEventListener(
+    "click",
+    () => {
+        if (
+            currentRole !== "admin"
+        ) {
+            return;
+        }
+
+        showAdminPanel(
+            adminPanel
+        );
+    }
+);
+
 
 /*
  * ==========================================
@@ -1976,6 +2016,19 @@ async function checkSession() {
 
         currentUser.textContent =
             data.username;
+            currentRole = data.role;
+
+            if (
+    currentRole === "admin"
+) {
+    adminTab.classList.remove(
+        "hidden"
+    );
+} else {
+    adminTab.classList.add(
+        "hidden"
+    );
+}
 
 
         showMainSection(
