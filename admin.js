@@ -249,6 +249,68 @@ const deskProgressList =
 const deskDoneList =
     document.querySelector("#desk-done-list");
 
+const profileTab =
+    document.querySelector("#profile-tab");
+
+const profilePanel =
+    document.querySelector("#profile-panel");
+
+const profileForm =
+    document.querySelector("#profile-form");
+
+const profileDisplayNameInput =
+    document.querySelector("#profile-display-name");
+
+const profileInfoInput =
+    document.querySelector("#profile-info");
+
+const profileImageInput =
+    document.querySelector("#profile-image");
+
+const profilePublicInput =
+    document.querySelector("#profile-public");
+
+const saveProfileButton =
+    document.querySelector("#save-profile-button");
+
+const removeProfileImageButton =
+    document.querySelector("#remove-profile-image-button");
+
+const profileStatus =
+    document.querySelector("#profile-status");
+
+
+const profileImagePreview =
+    document.querySelector("#profile-image-preview");
+
+const profileImagePlaceholder =
+    document.querySelector("#profile-image-placeholder");
+
+const profilePreviewName =
+    document.querySelector("#profile-preview-name");
+
+const profilePreviewInfo =
+    document.querySelector("#profile-preview-info");
+
+
+const passwordForm =
+    document.querySelector("#password-form");
+
+const currentPasswordInput =
+    document.querySelector("#current-password");
+
+const newPasswordInput =
+    document.querySelector("#new-password");
+
+const newPasswordRepeatInput =
+    document.querySelector("#new-password-repeat");
+
+const savePasswordButton =
+    document.querySelector("#save-password-button");
+
+const passwordStatus =
+    document.querySelector("#password-status");
+
 
 /*
  * ==========================================
@@ -305,6 +367,7 @@ let currentUsers = [];
 let currentGallery = [];
 let currentDeskItems = [];
 let editingDeskId = null;
+let currentProfileImage = null;
 
 /*
  * ==========================================
@@ -482,6 +545,7 @@ function showAdminPanel(panel) {
     /*
      * Alle Panels ausblenden
      */
+
     issuesPanel.classList.add(
         "hidden"
     );
@@ -490,22 +554,27 @@ function showAdminPanel(panel) {
         "hidden"
     );
 
-    adminPanel.classList.add(
+    deskPanel.classList.add(
         "hidden"
     );
 
     galleryPanel.classList.add(
-    "hidden"
+        "hidden"
     );
 
-    deskPanel.classList.add(
-    "hidden"
+    profilePanel.classList.add(
+        "hidden"
+    );
+
+    adminPanel.classList.add(
+        "hidden"
     );
 
 
     /*
      * Alle Tabs deaktivieren
      */
+
     issuesTab.classList.remove(
         "active"
     );
@@ -514,22 +583,27 @@ function showAdminPanel(panel) {
         "active"
     );
 
-    adminTab.classList.remove(
+    deskTab.classList.remove(
         "active"
     );
 
-    galleryPanel.classList.add(
-    "hidden"
+    galleryTab.classList.remove(
+        "active"
     );
 
-    deskTab.classList.remove(
-    "active"
+    profileTab.classList.remove(
+        "active"
+    );
+
+    adminTab.classList.remove(
+        "active"
     );
 
 
     /*
      * Gewünschtes Panel anzeigen
      */
+
     panel.classList.remove(
         "hidden"
     );
@@ -538,6 +612,7 @@ function showAdminPanel(panel) {
     /*
      * Passenden Tab aktivieren
      */
+
     if (
         panel === issuesPanel
     ) {
@@ -561,14 +636,41 @@ function showAdminPanel(panel) {
         return;
     }
 
+
     if (
         panel === deskPanel
     ) {
         deskTab.classList.add(
-             "active"
-        ); 
+            "active"
+        );
 
         loadDesk();
+
+        return;
+    }
+
+
+    if (
+        panel === galleryPanel
+    ) {
+        galleryTab.classList.add(
+            "active"
+        );
+
+        loadGallery();
+
+        return;
+    }
+
+
+    if (
+        panel === profilePanel
+    ) {
+        profileTab.classList.add(
+            "active"
+        );
+
+        loadProfile();
 
         return;
     }
@@ -582,18 +684,6 @@ function showAdminPanel(panel) {
         );
 
         loadUsers();
-
-        return;
-    }
-
-    if (
-        panel === galleryPanel
-    ) {
-        galleryTab.classList.add(
-            "active"
-        );
-
-        loadGallery();
 
         return;
     }
@@ -3534,6 +3624,660 @@ async function deleteDeskItem(
 
 /*
  * ==========================================
+ * PROFIL
+ * ==========================================
+ */
+
+
+/*
+ * PROFIL LADEN
+ */
+
+async function loadProfile() {
+    hideStatus(
+        profileStatus
+    );
+
+    try {
+        const response =
+            await fetch(
+                `${API_URL}/admin/profile`,
+                {
+                    method: "GET",
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (
+            await handleUnauthorized(
+                response
+            )
+        ) {
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+            showStatus(
+                profileStatus,
+                data.error ??
+                    "Profil konnte nicht geladen werden.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const profile =
+            data.profile;
+
+
+        profileDisplayNameInput.value =
+            profile.displayName ?? "";
+
+        profileInfoInput.value =
+            profile.info ?? "";
+
+        profilePublicInput.checked =
+            Boolean(
+                profile.isPublic
+            );
+
+
+        currentProfileImage =
+            profile.image ?? null;
+
+
+        updateProfilePreview();
+
+    } catch (error) {
+        console.error(error);
+
+        showStatus(
+            profileStatus,
+            "Die Verbindung zum Server ist fehlgeschlagen.",
+            "error"
+        );
+    }
+}
+
+
+/*
+ * PROFILVORSCHAU
+ */
+
+function updateProfilePreview() {
+    const displayName =
+        profileDisplayNameInput.value
+            .trim();
+
+    const info =
+        profileInfoInput.value
+            .trim();
+
+
+    profilePreviewName.textContent =
+        displayName ||
+        "Kein Anzeigename";
+
+
+    profilePreviewInfo.textContent =
+        info ||
+        "Noch keine Profilinformation.";
+
+
+    if (
+        currentProfileImage
+    ) {
+        profileImagePreview.src =
+            currentProfileImage;
+
+        profileImagePreview.classList.remove(
+            "hidden"
+        );
+
+        profileImagePlaceholder.classList.add(
+            "hidden"
+        );
+
+        removeProfileImageButton.disabled =
+            false;
+
+        return;
+    }
+
+
+    profileImagePreview.src =
+        "";
+
+    profileImagePreview.classList.add(
+        "hidden"
+    );
+
+    profileImagePlaceholder.classList.remove(
+        "hidden"
+    );
+
+    removeProfileImageButton.disabled =
+        true;
+}
+
+
+/*
+ * LIVE-VORSCHAU FÜR TEXT
+ */
+
+profileDisplayNameInput.addEventListener(
+    "input",
+    updateProfilePreview
+);
+
+
+profileInfoInput.addEventListener(
+    "input",
+    updateProfilePreview
+);
+
+
+/*
+ * LOKALE BILDVORSCHAU
+ */
+
+profileImageInput.addEventListener(
+    "change",
+    () => {
+        const file =
+            profileImageInput.files[0];
+
+
+        if (!file) {
+            updateProfilePreview();
+
+            return;
+        }
+
+
+        const maxSize =
+            4 * 1024 * 1024;
+
+
+        if (
+            file.size >
+            maxSize
+        ) {
+            showStatus(
+                profileStatus,
+                "Das Profilbild darf maximal 4 MB groß sein.",
+                "error"
+            );
+
+            profileImageInput.value =
+                "";
+
+            return;
+        }
+
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+
+        if (
+            !allowedTypes.includes(
+                file.type
+            )
+        ) {
+            showStatus(
+                profileStatus,
+                "Erlaubt sind nur JPG, PNG und WebP.",
+                "error"
+            );
+
+            profileImageInput.value =
+                "";
+
+            return;
+        }
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.addEventListener(
+            "load",
+            () => {
+                currentProfileImage =
+                    reader.result;
+
+                updateProfilePreview();
+            }
+        );
+
+
+        reader.readAsDataURL(
+            file
+        );
+    }
+);
+
+
+/*
+ * PROFIL SPEICHERN
+ */
+
+profileForm.addEventListener(
+    "submit",
+    async event => {
+        event.preventDefault();
+
+
+        hideStatus(
+            profileStatus
+        );
+
+
+        const displayName =
+            profileDisplayNameInput.value
+                .trim();
+
+
+        if (
+            profilePublicInput.checked &&
+            !displayName
+        ) {
+            showStatus(
+                profileStatus,
+                "Für ein öffentliches Profil ist ein Anzeigename erforderlich.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "display_name",
+            displayName
+        );
+
+
+        formData.append(
+            "profile_info",
+            profileInfoInput.value
+                .trim()
+        );
+
+
+        formData.append(
+            "profile_public",
+            profilePublicInput.checked
+                ? "1"
+                : "0"
+        );
+
+
+        const image =
+            profileImageInput.files[0];
+
+
+        if (image) {
+            formData.append(
+                "image",
+                image
+            );
+        }
+
+
+        saveProfileButton.disabled =
+            true;
+
+        saveProfileButton.textContent =
+            "Wird gespeichert …";
+
+
+        try {
+            const response =
+                await fetch(
+                    `${API_URL}/admin/profile`,
+                    {
+                        method: "PUT",
+
+                        headers:
+                            getAuthHeaders(),
+
+                        body:
+                            formData
+                    }
+                );
+
+
+            if (
+                await handleUnauthorized(
+                    response
+                )
+            ) {
+                return;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+                showStatus(
+                    profileStatus,
+                    data.error ??
+                        "Profil konnte nicht gespeichert werden.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            currentProfileImage =
+                data.profile.image ??
+                null;
+
+
+            profileImageInput.value =
+                "";
+
+
+            updateProfilePreview();
+
+
+            showStatus(
+                profileStatus,
+                "Profil wurde gespeichert.",
+                "success"
+            );
+
+        } catch (error) {
+            console.error(error);
+
+
+            showStatus(
+                profileStatus,
+                "Die Verbindung zum Server ist fehlgeschlagen.",
+                "error"
+            );
+
+        } finally {
+            saveProfileButton.disabled =
+                false;
+
+            saveProfileButton.textContent =
+                "Profil speichern";
+        }
+    }
+);
+
+
+/*
+ * PROFILBILD ENTFERNEN
+ */
+
+removeProfileImageButton.addEventListener(
+    "click",
+    async () => {
+        if (
+            !currentProfileImage
+        ) {
+            return;
+        }
+
+
+        const confirmed =
+            window.confirm(
+                "Profilbild wirklich entfernen?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        removeProfileImageButton.disabled =
+            true;
+
+
+        try {
+            const response =
+                await fetch(
+                    `${API_URL}/admin/profile/image`,
+                    {
+                        method: "DELETE",
+
+                        headers:
+                            getAuthHeaders()
+                    }
+                );
+
+
+            if (
+                await handleUnauthorized(
+                    response
+                )
+            ) {
+                return;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+                showStatus(
+                    profileStatus,
+                    data.error ??
+                        "Profilbild konnte nicht entfernt werden.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            currentProfileImage =
+                null;
+
+
+            profileImageInput.value =
+                "";
+
+
+            updateProfilePreview();
+
+
+            showStatus(
+                profileStatus,
+                "Profilbild wurde entfernt.",
+                "success"
+            );
+
+        } catch (error) {
+            console.error(error);
+
+
+            showStatus(
+                profileStatus,
+                "Die Verbindung zum Server ist fehlgeschlagen.",
+                "error"
+            );
+
+        } finally {
+            if (
+                currentProfileImage
+            ) {
+                removeProfileImageButton.disabled =
+                    false;
+            }
+        }
+    }
+);
+
+
+/*
+ * ==========================================
+ * PASSWORT ÄNDERN
+ * ==========================================
+ */
+
+passwordForm.addEventListener(
+    "submit",
+    async event => {
+        event.preventDefault();
+
+
+        hideStatus(
+            passwordStatus
+        );
+
+
+        const currentPassword =
+            currentPasswordInput.value;
+
+
+        const newPassword =
+            newPasswordInput.value;
+
+
+        const newPasswordRepeat =
+            newPasswordRepeatInput.value;
+
+
+        if (
+            newPassword !==
+            newPasswordRepeat
+        ) {
+            showStatus(
+                passwordStatus,
+                "Die neuen Passwörter stimmen nicht überein.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (
+            newPassword.length < 12
+        ) {
+            showStatus(
+                passwordStatus,
+                "Das neue Passwort muss mindestens 12 Zeichen lang sein.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        savePasswordButton.disabled =
+            true;
+
+        savePasswordButton.textContent =
+            "Wird geändert …";
+
+
+        try {
+            const response =
+                await fetch(
+                    `${API_URL}/admin/profile/password`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            ...getAuthHeaders(),
+
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                currentPassword,
+                                newPassword
+                            })
+                    }
+                );
+
+
+            if (
+                await handleUnauthorized(
+                    response
+                )
+            ) {
+                return;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+                showStatus(
+                    passwordStatus,
+                    data.error ??
+                        "Passwort konnte nicht geändert werden.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            passwordForm.reset();
+
+
+            showStatus(
+                passwordStatus,
+                "Passwort wurde erfolgreich geändert.",
+                "success"
+            );
+
+        } catch (error) {
+            console.error(error);
+
+
+            showStatus(
+                passwordStatus,
+                "Die Verbindung zum Server ist fehlgeschlagen.",
+                "error"
+            );
+
+        } finally {
+            savePasswordButton.disabled =
+                false;
+
+            savePasswordButton.textContent =
+                "Passwort ändern";
+        }
+    }
+);
+
+/*
+ * ==========================================
  * LOGIN
  * ==========================================
  */
@@ -3973,6 +4717,15 @@ newDeskButton.addEventListener(
 cancelDeskButton.addEventListener(
     "click",
     closeDeskEditor
+);
+
+profileTab.addEventListener(
+    "click",
+    () => {
+        showAdminPanel(
+            profilePanel
+        );
+    }
 );
 
 
