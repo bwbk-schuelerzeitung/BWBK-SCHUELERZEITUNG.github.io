@@ -1503,3 +1503,305 @@ section {
 .gallery-lightbox.hidden {
     display: none;
 }
+
+/* ==========================================
+   DARK MODE
+   ========================================== */
+
+@media (prefers-color-scheme: dark) {
+
+    /*
+     * GLOBALE FARBEN
+     */
+
+    :root {
+        --background: #0f1114;
+        --surface: #191c20;
+
+        --text: #f2f3f5;
+        --text-light: #b1b5bb;
+
+        --accent: #c56573;
+        --accent-hover: #df7b89;
+
+        --navigation-top: #25282c;
+        --navigation-middle: #1b1e21;
+        --navigation-bottom: #111315;
+
+        --border: #30343a;
+
+        --shadow:
+            0 18px 50px
+            rgba(0, 0, 0, 0.42);
+    }
+
+
+    /*
+     * SEITE
+     */
+
+    body {
+        color: var(--text);
+        background: var(--background);
+    }
+
+
+    /*
+     * HERO
+     */
+
+    .hero {
+        background-image:
+            url("assets/images/header-dark.png");
+
+        background-color: #020810;
+    }
+
+
+    /*
+     * NAVIGATION
+     */
+
+    .main-navigation {
+        border-bottom-color:
+            rgba(255, 255, 255, 0.06);
+
+        box-shadow:
+            0 8px 28px
+            rgba(0, 0, 0, 0.42);
+    }
+
+
+    /*
+     * AKTUELLE AUSGABE
+     */
+
+    .current-card {
+        background:
+            var(--surface);
+
+        border-color:
+            var(--border);
+
+        box-shadow:
+            var(--shadow);
+    }
+
+    .cover-wrapper {
+        background:
+            #24282d;
+    }
+
+
+    /*
+     * ARCHIV
+     */
+
+    .archive-row {
+        background:
+            var(--surface);
+
+        border-color:
+            var(--border);
+    }
+
+    .archive-row:hover,
+    .archive-row:focus-visible {
+        border-color:
+            rgba(197, 101, 115, 0.55);
+
+        box-shadow:
+            0 10px 30px
+            rgba(0, 0, 0, 0.32);
+    }
+
+    .archive-row-cover {
+        background:
+            #24282d;
+    }
+
+
+    /*
+     * INFORMATIONSKARTEN
+     */
+
+    .information-card {
+        color:
+            var(--text-light);
+
+        background:
+            var(--surface);
+
+        border-color:
+            var(--border);
+
+        box-shadow:
+            0 12px 34px
+            rgba(0, 0, 0, 0.25);
+    }
+
+
+    /*
+     * STATUSMELDUNGEN
+     */
+
+    .status-message,
+    .error-message {
+        background:
+            var(--surface);
+    }
+
+    .error-message {
+        color:
+            #ff8d8d;
+    }
+
+
+    /*
+     * AKTUELLES
+     */
+
+    .update-card,
+    .date-row {
+        background:
+            var(--surface);
+
+        border:
+            1px solid var(--border);
+
+        box-shadow:
+            0 4px 18px
+            rgba(0, 0, 0, 0.22);
+    }
+
+    .update-card-date,
+    .date-calendar {
+        border-right-color:
+            var(--border);
+    }
+
+
+    /*
+     * TEAM
+     */
+
+    .team-card {
+        background:
+            var(--surface);
+
+        border-color:
+            var(--border);
+
+        box-shadow:
+            0 8px 26px
+            rgba(0, 0, 0, 0.24);
+    }
+
+    .team-profile-placeholder {
+        color:
+            var(--text-light);
+
+        background:
+            #262a2f;
+    }
+
+
+    /*
+     * ÖFFENTLICHE GALERIE
+     */
+
+    .public-gallery-card {
+        background:
+            var(--surface);
+
+        border-color:
+            var(--border);
+
+        box-shadow:
+            0 10px 28px
+            rgba(0, 0, 0, 0.24);
+    }
+
+    .public-gallery-card:hover,
+    .public-gallery-card:focus-visible {
+        border-color:
+            rgba(197, 101, 115, 0.55);
+
+        box-shadow:
+            0 16px 36px
+            rgba(0, 0, 0, 0.34);
+    }
+
+    .public-gallery-image-wrapper {
+        background:
+            #24282d;
+    }
+
+
+    /*
+     * GALERIE AUF DER STARTSEITE
+     */
+
+    .home-gallery-card {
+        background:
+            #24282d;
+
+        box-shadow:
+            0 8px 24px
+            rgba(0, 0, 0, 0.28);
+    }
+
+
+    /*
+     * PUSH-BUTTON
+     */
+
+    .push-floating-button {
+        color:
+            #f5f5f5;
+
+        background:
+            #25292e;
+
+        border:
+            1px solid var(--border);
+
+        box-shadow:
+            0 6px 20px
+            rgba(0, 0, 0, 0.35);
+    }
+
+    .push-floating-button.push-active {
+        background:
+            var(--accent);
+
+        border-color:
+            var(--accent);
+    }
+
+    .push-floating-status {
+        background:
+            rgba(25, 28, 32, 0.97);
+
+        border:
+            1px solid var(--border);
+    }
+
+
+    /*
+     * FOOTER
+     */
+
+    .site-footer {
+        background:
+            linear-gradient(
+                180deg,
+                #17191c,
+                #0c0e10
+            );
+
+        border-top:
+            1px solid var(--border);
+    }
+
+}
