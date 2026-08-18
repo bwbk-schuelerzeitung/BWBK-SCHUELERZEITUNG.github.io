@@ -371,11 +371,10 @@ let editingUpdateId = null;
 let currentRole = null;
 let currentUsers = [];
 let currentGallery = [];
+let editingGalleryId = null;
 let currentDeskItems = [];
 let editingDeskId = null;
 let currentProfileImage = null;
-let currentGallery = [];
-let editingGalleryId = null;
 
 /*
  * ==========================================
