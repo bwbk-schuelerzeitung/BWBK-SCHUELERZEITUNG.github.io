@@ -174,6 +174,9 @@ const newGalleryButton =
 const galleryEditor =
     document.querySelector("#gallery-editor");
 
+const galleryEditorTitle =
+    document.querySelector("#gallery-editor-title");
+
 const galleryForm =
     document.querySelector("#gallery-form");
 
@@ -185,6 +188,9 @@ const galleryDescriptionInput =
 
 const galleryImageInput =
     document.querySelector("#gallery-image");
+
+const galleryImageHint =
+    document.querySelector("#gallery-image-hint");
 
 const saveGalleryButton =
     document.querySelector("#save-gallery-button");
@@ -368,6 +374,8 @@ let currentGallery = [];
 let currentDeskItems = [];
 let editingDeskId = null;
 let currentProfileImage = null;
+let currentGallery = [];
+let editingGalleryId = null;
 
 /*
  * ==========================================
@@ -2566,6 +2574,7 @@ async function loadGallery() {
                 }
             );
 
+
         if (
             await handleUnauthorized(
                 response
@@ -2574,8 +2583,10 @@ async function loadGallery() {
             return;
         }
 
+
         const data =
             await response.json();
+
 
         if (!response.ok) {
             galleryList.innerHTML = `
@@ -2590,6 +2601,7 @@ async function loadGallery() {
             return;
         }
 
+
         currentGallery =
             Array.isArray(
                 data.gallery
@@ -2597,10 +2609,12 @@ async function loadGallery() {
                 ? data.gallery
                 : [];
 
+
         renderGallery();
 
     } catch (error) {
         console.error(error);
+
 
         galleryList.innerHTML = `
             <div class="card empty-state">
@@ -2627,6 +2641,7 @@ function renderGallery() {
 
         return;
     }
+
 
     galleryList.innerHTML =
         currentGallery
@@ -2655,7 +2670,16 @@ function renderGallery() {
 
                         </div>
 
+
                         <div class="gallery-admin-actions">
+
+                            <button
+                                class="ghost-button edit-gallery-button"
+                                type="button"
+                                data-gallery="${escapeHtml(item.id)}"
+                            >
+                                Bearbeiten
+                            </button>
 
                             <button
                                 class="danger-button delete-gallery-button"
@@ -2672,6 +2696,7 @@ function renderGallery() {
             )
             .join("");
 
+
     bindGalleryButtons();
 }
 
@@ -2681,6 +2706,26 @@ function renderGallery() {
  */
 
 function bindGalleryButtons() {
+    document
+        .querySelectorAll(
+            ".edit-gallery-button"
+        )
+        .forEach(
+            button => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        openEditGallery(
+                            Number(
+                                button.dataset.gallery
+                            )
+                        );
+                    }
+                );
+            }
+        );
+
+
     document
         .querySelectorAll(
             ".delete-gallery-button"
@@ -2703,21 +2748,45 @@ function bindGalleryButtons() {
 
 
 /*
- * UPLOAD-FORMULAR ÖFFNEN
+ * NEUES FOTO
  */
 
 function openGalleryEditor() {
+    editingGalleryId =
+        null;
+
+
     galleryForm.reset();
+
+
+    galleryEditorTitle.textContent =
+        "Neues Foto";
+
+
+    saveGalleryButton.textContent =
+        "Foto hochladen";
+
+
+    galleryImageInput.required =
+        true;
+
+
+    galleryImageHint.textContent =
+        "JPG, PNG oder WebP · maximal 4 MB";
+
 
     hideStatus(
         galleryStatus
     );
 
+
     galleryEditor.classList.remove(
         "hidden"
     );
 
+
     galleryTitleInput.focus();
+
 
     galleryEditor.scrollIntoView({
         behavior: "smooth",
@@ -2727,15 +2796,109 @@ function openGalleryEditor() {
 
 
 /*
- * UPLOAD-FORMULAR SCHLIESSEN
+ * FOTO BEARBEITEN
+ */
+
+function openEditGallery(
+    galleryId
+) {
+    const item =
+        currentGallery.find(
+            galleryItem =>
+                Number(
+                    galleryItem.id
+                ) === galleryId
+        );
+
+
+    if (!item) {
+        return;
+    }
+
+
+    editingGalleryId =
+        galleryId;
+
+
+    galleryForm.reset();
+
+
+    galleryTitleInput.value =
+        item.title ?? "";
+
+
+    galleryDescriptionInput.value =
+        item.description ?? "";
+
+
+    galleryImageInput.required =
+        false;
+
+
+    galleryEditorTitle.textContent =
+        "Foto bearbeiten";
+
+
+    saveGalleryButton.textContent =
+        "Änderungen speichern";
+
+
+    galleryImageHint.textContent =
+        "Optional: neues Foto auswählen. Ohne Auswahl bleibt das aktuelle Bild bestehen. JPG, PNG oder WebP · maximal 4 MB";
+
+
+    hideStatus(
+        galleryStatus
+    );
+
+
+    galleryEditor.classList.remove(
+        "hidden"
+    );
+
+
+    galleryTitleInput.focus();
+
+
+    galleryEditor.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+/*
+ * GALERIE-EDITOR SCHLIESSEN
  */
 
 function closeGalleryEditor() {
+    editingGalleryId =
+        null;
+
+
     galleryForm.reset();
+
+
+    galleryImageInput.required =
+        false;
+
+
+    galleryEditorTitle.textContent =
+        "Neues Foto";
+
+
+    saveGalleryButton.textContent =
+        "Foto hochladen";
+
+
+    galleryImageHint.textContent =
+        "JPG, PNG oder WebP · maximal 4 MB";
+
 
     galleryEditor.classList.add(
         "hidden"
     );
+
 
     hideStatus(
         galleryStatus
@@ -2744,7 +2907,7 @@ function closeGalleryEditor() {
 
 
 /*
- * FOTO HOCHLADEN
+ * FOTO SPEICHERN
  */
 
 galleryForm.addEventListener(
@@ -2752,14 +2915,25 @@ galleryForm.addEventListener(
     async event => {
         event.preventDefault();
 
+
         hideStatus(
             galleryStatus
         );
 
+
         const image =
             galleryImageInput.files[0];
 
-        if (!image) {
+
+        /*
+         * Bei einem neuen Bild ist
+         * eine Datei Pflicht.
+         */
+
+        if (
+            editingGalleryId === null &&
+            !image
+        ) {
             showStatus(
                 galleryStatus,
                 "Bitte wähle ein Foto aus.",
@@ -2771,67 +2945,136 @@ galleryForm.addEventListener(
 
 
         /*
-         * Zusätzliche Prüfung im Browser.
-         * Der Worker prüft ebenfalls.
+         * Bild prüfen, falls eines
+         * ausgewählt wurde.
          */
 
-        const maxImageSize =
-            4 * 1024 * 1024;
+        if (image) {
+            const maxImageSize =
+                4 * 1024 * 1024;
 
-        if (
-            image.size >
-            maxImageSize
-        ) {
-            showStatus(
-                galleryStatus,
-                "Das Bild darf maximal 4 MB groß sein.",
-                "error"
-            );
 
-            return;
+            if (
+                image.size >
+                maxImageSize
+            ) {
+                showStatus(
+                    galleryStatus,
+                    "Das Bild darf maximal 4 MB groß sein.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+
+            if (
+                !allowedTypes.includes(
+                    image.type
+                )
+            ) {
+                showStatus(
+                    galleryStatus,
+                    "Erlaubt sind nur JPG, PNG und WebP.",
+                    "error"
+                );
+
+                return;
+            }
         }
 
 
         const formData =
             new FormData();
 
+
         formData.append(
             "title",
-            galleryTitleInput.value.trim()
+            galleryTitleInput.value
+                .trim()
         );
+
 
         formData.append(
             "description",
-            galleryDescriptionInput.value.trim()
+            galleryDescriptionInput.value
+                .trim()
         );
 
-        formData.append(
-            "image",
-            image
-        );
+
+        if (image) {
+            formData.append(
+                "image",
+                image
+            );
+        }
 
 
         saveGalleryButton.disabled =
             true;
 
+
         saveGalleryButton.textContent =
-            "Wird hochgeladen …";
+            editingGalleryId === null
+                ? "Wird hochgeladen …"
+                : "Wird gespeichert …";
 
 
         try {
-            const response =
-                await fetch(
-                    `${API_URL}/admin/gallery`,
-                    {
-                        method: "POST",
+            let response;
 
-                        headers:
-                            getAuthHeaders(),
 
-                        body:
-                            formData
-                    }
-                );
+            /*
+             * NEU
+             */
+
+            if (
+                editingGalleryId === null
+            ) {
+                response =
+                    await fetch(
+                        `${API_URL}/admin/gallery`,
+                        {
+                            method:
+                                "POST",
+
+                            headers:
+                                getAuthHeaders(),
+
+                            body:
+                                formData
+                        }
+                    );
+            }
+
+
+            /*
+             * BEARBEITEN
+             */
+
+            else {
+                response =
+                    await fetch(
+                        `${API_URL}/admin/gallery/${editingGalleryId}`,
+                        {
+                            method:
+                                "PUT",
+
+                            headers:
+                                getAuthHeaders(),
+
+                            body:
+                                formData
+                        }
+                    );
+            }
 
 
             if (
@@ -2851,7 +3094,7 @@ galleryForm.addEventListener(
                 showStatus(
                     galleryStatus,
                     data.error ??
-                        "Foto konnte nicht hochgeladen werden.",
+                        "Foto konnte nicht gespeichert werden.",
                     "error"
                 );
 
@@ -2861,7 +3104,9 @@ galleryForm.addEventListener(
 
             showStatus(
                 galleryStatus,
-                "Foto wurde erfolgreich hochgeladen.",
+                editingGalleryId === null
+                    ? "Foto wurde erfolgreich hochgeladen."
+                    : "Foto wurde erfolgreich aktualisiert.",
                 "success"
             );
 
@@ -2879,6 +3124,7 @@ galleryForm.addEventListener(
         } catch (error) {
             console.error(error);
 
+
             showStatus(
                 galleryStatus,
                 "Die Verbindung zum Server ist fehlgeschlagen.",
@@ -2889,8 +3135,11 @@ galleryForm.addEventListener(
             saveGalleryButton.disabled =
                 false;
 
+
             saveGalleryButton.textContent =
-                "Foto hochladen";
+                editingGalleryId === null
+                    ? "Foto hochladen"
+                    : "Änderungen speichern";
         }
     }
 );
@@ -2910,6 +3159,7 @@ async function deleteGalleryItem(
                     galleryItem.id
                 ) === galleryId
         );
+
 
     if (!item) {
         return;
@@ -2932,7 +3182,8 @@ async function deleteGalleryItem(
             await fetch(
                 `${API_URL}/admin/gallery/${galleryId}`,
                 {
-                    method: "DELETE",
+                    method:
+                        "DELETE",
 
                     headers:
                         getAuthHeaders()
@@ -2963,10 +3214,19 @@ async function deleteGalleryItem(
         }
 
 
+        if (
+            editingGalleryId ===
+            galleryId
+        ) {
+            closeGalleryEditor();
+        }
+
+
         await loadGallery();
 
     } catch (error) {
         console.error(error);
+
 
         window.alert(
             "Die Verbindung zum Server ist fehlgeschlagen."
