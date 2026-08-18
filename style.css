@@ -181,82 +181,34 @@ a {
 /* HERO */
 
 .hero {
-    position: relative;
-
-    min-height: 58vh;
-    overflow: hidden;
-
-    display: flex;
-    align-items: flex-end;
-
-    background: #202020;
-}
-
-.hero-image {
-    position: absolute;
-    inset: 0;
-
     width: 100%;
-    height: 100%;
 
-    object-fit: cover;
-    object-position: center;
+    aspect-ratio: 16 / 9;
+
+    background-image:
+        url("assets/images/header-light.png");
+
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    background-color: #ffffff;
 }
 
-.hero-overlay {
-    position: absolute;
-    inset: 0;
 
-    background:
-        linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.86) 0%,
-            rgba(0, 0, 0, 0.46) 42%,
-            rgba(0, 0, 0, 0.1) 100%
-        );
+/* DARK MODE */
+
+@media (prefers-color-scheme: dark) {
+
+    .hero {
+        background-image:
+            url("assets/images/header-dark.png");
+
+        background-color: #020810;
+    }
+
 }
 
-.hero-content {
-    position: relative;
-    z-index: 1;
-
-    width: min(calc(100% - 40px), var(--content-width));
-    margin: 0 auto;
-    padding: 68px 0;
-
-    color: white;
-}
-
-.school-name {
-    margin: 0 0 14px;
-
-    color: rgba(255, 255, 255, 0.76);
-
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-}
-
-.hero h1 {
-    margin: 0;
-
-    font-family: Garamond, Georgia, "Times New Roman", serif;
-    font-size: clamp(3rem, 8vw, 6.2rem);
-    font-weight: 400;
-    line-height: 0.95;
-    letter-spacing: -0.045em;
-}
-
-.intro {
-    max-width: 680px;
-    margin: 24px 0 0;
-
-    color: rgba(255, 255, 255, 0.82);
-
-    font-size: clamp(1.05rem, 2vw, 1.35rem);
-    line-height: 1.6;
-}
 
 /* SECTIONS */
 
@@ -697,15 +649,8 @@ section {
     }
 }
 
+
 @media (max-width: 800px) {
-    .hero {
-        min-height: 52vh;
-    }
-
-    .hero-content {
-        padding: 54px 0;
-    }
-
     .current-card {
         grid-template-columns: 1fr;
     }
@@ -719,66 +664,15 @@ section {
     }
 }
 
+
 /* MOBILE */
 
-@media (max-width: 520px) {
     .hero {
-        min-height: 0;
-        overflow: visible;
-
-        display: block;
-
-        background: var(--surface);
+        aspect-ratio: 16 / 10;
     }
 
-    .hero-image {
-        position: relative;
-        inset: auto;
 
-        width: 100%;
-        height: auto;
-
-        object-fit: contain;
-        object-position: center;
-    }
-
-    .hero-overlay {
-        display: none;
-    }
-
-    .hero-content {
-        width: 100%;
-        margin: 0;
-        padding: 26px 18px 32px;
-
-        color: var(--text);
-        background: var(--surface);
-    }
-
-    .school-name {
-        margin-bottom: 10px;
-
-        color: var(--accent);
-
-        font-size: 0.68rem;
-        line-height: 1.5;
-    }
-
-    .hero h1 {
-        font-size: clamp(2.5rem, 13vw, 3.8rem);
-        line-height: 1;
-        letter-spacing: -0.035em;
-    }
-
-    .intro {
-        margin-top: 14px;
-
-        color: var(--text-light);
-
-        font-size: 1rem;
-        line-height: 1.55;
-    }
-
+@media (max-width: 520px) {
     .current-section {
         margin-top: 0;
     }
