@@ -1,100 +1,282 @@
 "use strict";
 
+
 window.OneSignalDeferred =
     window.OneSignalDeferred || [];
 
-OneSignalDeferred.push(async function (OneSignal) {
-    await OneSignal.init({
-        appId: "264f05a0-58fc-4611-9f11-189078fac630"
-    });
 
-    const button =
-        document.querySelector("#enable-push-button");
+OneSignalDeferred.push(
+    async function (OneSignal) {
 
-    const status =
-        document.querySelector("#push-status");
+        await OneSignal.init({
+            appId:
+                "264f05a0-58fc-4611-9f11-189078fac630"
+        });
 
-    if (!button) {
-        return;
-    }
 
-    const supported =
-        OneSignal.Notifications.isPushSupported();
+        const button =
+            document.querySelector(
+                "#enable-push-button"
+            );
 
-    if (!supported) {
-        button.hidden = true;
+        const status =
+            document.querySelector(
+                "#push-status"
+            );
 
-        if (status) {
-            status.textContent =
-                "Benachrichtigungen werden auf diesem Gerät nicht unterstützt.";
+
+        if (!button) {
+            return;
         }
 
-        return;
-    }
 
-    function updatePushStatus() {
-        const permission =
-            OneSignal.Notifications.permission;
+        const supported =
+            OneSignal.Notifications
+                .isPushSupported();
 
-        const optedIn =
-            OneSignal.User.PushSubscription.optedIn;
 
-        if (permission && optedIn) {
-            button.textContent =
-                "Benachrichtigungen aktiviert";
+        /*
+         * ==========================================
+         * PUSH NICHT UNTERSTÜTZT
+         * ==========================================
+         */
 
-            button.disabled = true;
+        if (!supported) {
+            button.hidden =
+                true;
 
             if (status) {
                 status.textContent =
-                    "Du erhältst eine Benachrichtigung bei neuen Ausgaben und wichtigen Terminen.";
+                    "Benachrichtigungen werden auf diesem Gerät nicht unterstützt.";
             }
 
             return;
         }
 
-        button.textContent =
-            "Benachrichtigungen aktivieren";
 
-        button.disabled = false;
+        /*
+         * ==========================================
+         * ANZEIGE AKTUALISIEREN
+         * ==========================================
+         */
 
-        if (status) {
-            status.textContent =
-                "Erhalte Benachrichtigungen bei neuen Ausgaben und wichtigen Terminen.";
-        }
-    }
+        function updatePushStatus() {
+            const permission =
+                OneSignal.Notifications
+                    .permission;
 
-    button.addEventListener("click", async () => {
-        button.disabled = true;
+            const optedIn =
+                OneSignal.User
+                    .PushSubscription
+                    .optedIn;
 
-        try {
-            await OneSignal.Notifications.requestPermission();
+
+            /*
+             * Push ist aktiviert
+             */
 
             if (
-                OneSignal.Notifications.permission &&
-                !OneSignal.User.PushSubscription.optedIn
+                permission &&
+                optedIn
             ) {
-                await OneSignal.User.PushSubscription.optIn();
+                button.innerHTML = `
+                    <span
+                        class="push-floating-icon"
+                        aria-hidden="true"
+                    >
+                        🔔
+                    </span>
+
+                    <span class="push-floating-label">
+                        Benachrichtigungen an
+                    </span>
+                `;
+
+
+                button.classList.add(
+                    "push-active"
+                );
+
+
+                button.setAttribute(
+                    "aria-label",
+                    "Benachrichtigungen deaktivieren"
+                );
+
+
+                button.setAttribute(
+                    "title",
+                    "Benachrichtigungen deaktivieren"
+                );
+
+
+                if (status) {
+                    status.textContent =
+                        "Benachrichtigungen für neue Ausgaben und wichtige Termine sind aktiviert.";
+                }
+
+                return;
             }
-        } catch (error) {
-            console.error(
-                "Push-Benachrichtigungen konnten nicht aktiviert werden:",
-                error
+
+
+            /*
+             * Push ist deaktiviert
+             */
+
+            button.innerHTML = `
+                <span
+                    class="push-floating-icon"
+                    aria-hidden="true"
+                >
+                    🔕
+                </span>
+
+                <span class="push-floating-label">
+                    Benachrichtigungen aus
+                </span>
+            `;
+
+
+            button.classList.remove(
+                "push-active"
             );
+
+
+            button.setAttribute(
+                "aria-label",
+                "Benachrichtigungen aktivieren"
+            );
+
+
+            button.setAttribute(
+                "title",
+                "Benachrichtigungen aktivieren"
+            );
+
+
+            if (status) {
+                status.textContent =
+                    "Benachrichtigungen für neue Ausgaben und wichtige Termine sind deaktiviert.";
+            }
         }
 
+
+        /*
+         * ==========================================
+         * EIN / AUS
+         * ==========================================
+         */
+
+        button.addEventListener(
+            "click",
+            async () => {
+
+                button.disabled =
+                    true;
+
+
+                try {
+                    const optedIn =
+                        OneSignal.User
+                            .PushSubscription
+                            .optedIn;
+
+
+                    /*
+                     * Aktuell AN
+                     * → ausschalten
+                     */
+
+                    if (optedIn) {
+                        await OneSignal.User
+                            .PushSubscription
+                            .optOut();
+
+                        updatePushStatus();
+
+                        return;
+                    }
+
+
+                    /*
+                     * Browser-Berechtigung
+                     * noch nicht vorhanden
+                     */
+
+                    if (
+                        !OneSignal.Notifications
+                            .permission
+                    ) {
+                        await OneSignal
+                            .Notifications
+                            .requestPermission();
+                    }
+
+
+                    /*
+                     * Nur abonnieren,
+                     * wenn Berechtigung vorhanden.
+                     */
+
+                    if (
+                        OneSignal.Notifications
+                            .permission
+                    ) {
+                        await OneSignal.User
+                            .PushSubscription
+                            .optIn();
+                    }
+
+
+                    updatePushStatus();
+
+                } catch (error) {
+                    console.error(
+                        "Push-Einstellung konnte nicht geändert werden:",
+                        error
+                    );
+
+
+                    if (status) {
+                        status.textContent =
+                            "Die Benachrichtigungseinstellung konnte nicht geändert werden.";
+                    }
+
+                } finally {
+                    button.disabled =
+                        false;
+                }
+            }
+        );
+
+
+        /*
+         * ==========================================
+         * ÄNDERUNGEN BEOBACHTEN
+         * ==========================================
+         */
+
+        OneSignal.Notifications
+            .addEventListener(
+                "permissionChange",
+                updatePushStatus
+            );
+
+
+        OneSignal.User
+            .PushSubscription
+            .addEventListener(
+                "change",
+                updatePushStatus
+            );
+
+
+        /*
+         * ==========================================
+         * START
+         * ==========================================
+         */
+
         updatePushStatus();
-    });
-
-    OneSignal.Notifications.addEventListener(
-        "permissionChange",
-        updatePushStatus
-    );
-
-    OneSignal.User.PushSubscription.addEventListener(
-        "change",
-        updatePushStatus
-    );
-
-    updatePushStatus();
-});
+    }
+);

@@ -184,40 +184,27 @@
 
         </section>
 
-        <section
-            class="section information-section"
-            id="mitmachen"
+       <section
+                class="section information-section"
+                id="mitmachen"
         >
             <div class="section-heading">
-                <p class="eyebrow">Deine Ideen zählen</p>
-                <h2>Mitmachen</h2>
+                <p class="eyebrow">
+                Deine Ideen zählen
+            </p>
+
+            <h2>
+                Mitmachen
+            </h2>
             </div>
 
-           <div class="information-card">
-    <p>
-        Du möchtest schreiben, fotografieren,
-        gestalten oder eigene Ideen einbringen?
-        Dann werde Teil von BWBK Aktuell.
-    </p>
-
-    <div class="push-settings">
-        <button
-            id="enable-push-button"
-            class="push-button"
-            type="button"
-        >
-            Benachrichtigungen aktivieren
-        </button>
-
-        <p
-            id="push-status"
-            class="push-status"
-            aria-live="polite"
-        >
-            Erhalte eine kurze Nachricht bei einer neuen Ausgabe.
-        </p>
-    </div>
-</div>
+            <div class="information-card">
+            <p>
+                Du möchtest schreiben, fotografieren,
+                gestalten oder eigene Ideen einbringen?
+                Dann werde Teil von BWBK Aktuell.
+            </p>
+            </div>
         </section>
 
         <section
@@ -249,5 +236,35 @@
             Keine Kommentare · Keine Cookies · Keine Werbung
         </p>
     </footer>
+
+    <div class="push-floating">
+
+    <button
+        id="enable-push-button"
+        class="push-floating-button"
+        type="button"
+        aria-label="Benachrichtigungen aktivieren"
+        title="Benachrichtigungen"
+    >
+        <span
+            class="push-floating-icon"
+            aria-hidden="true"
+        >
+            🔔
+        </span>
+
+        <span class="push-floating-label">
+            Benachrichtigungen
+        </span>
+    </button>
+
+    <p
+        id="push-status"
+        class="push-floating-status"
+        aria-live="polite"
+    ></p>
+
+</div>
+
 </body>
 </html>

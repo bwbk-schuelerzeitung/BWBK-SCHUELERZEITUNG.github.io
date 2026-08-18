@@ -838,49 +838,114 @@ section {
     opacity: 0.65;
 }
 
-/* PUSH NOTIFICATIONS */
+/* ==========================================
+   PUSH-BENACHRICHTIGUNGEN
+   ========================================== */
 
-.push-settings {
-    margin-top: 28px;
+.push-floating {
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    gap: 8px;
 }
 
-.push-button {
-    padding: 14px 20px;
+.push-floating-button {
+    display: flex;
+    align-items: center;
 
-    color: white;
-    background: var(--accent);
+    gap: 8px;
 
-    font: inherit;
-    font-weight: 700;
+    padding: 10px 14px;
 
     border: 0;
-    border-radius: 14px;
+    border-radius: 999px;
+
+    background: #0f172a;
+    color: #ffffff;
+
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
 
     cursor: pointer;
 
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.18);
+
     transition:
-        background 160ms ease,
         transform 160ms ease,
         opacity 160ms ease;
 }
 
-.push-button:hover,
-.push-button:focus-visible {
-    background: var(--accent-hover);
+.push-floating-button:hover {
     transform: translateY(-2px);
 }
 
-.push-button:disabled {
+.push-floating-button:disabled {
     cursor: default;
-    opacity: 0.72;
-    transform: none;
+    opacity: 0.75;
 }
 
-.push-status {
-    margin-top: 12px !important;
+.push-floating-button.push-active {
+    background: var(--accent);
+}
 
-    color: var(--text-light);
-    font-size: 0.92rem !important;
+.push-floating-icon {
+    font-size: 1rem;
+}
+
+.push-floating-status {
+    max-width: 280px;
+
+    margin: 0;
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    background: rgba(15, 23, 42, 0.94);
+    color: #ffffff;
+
+    font-size: 0.75rem;
+    line-height: 1.4;
+
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .push-floating {
+        right: 12px;
+        bottom: 12px;
+    }
+
+    .push-floating-button {
+        padding: 10px 12px;
+    }
+
+    .push-floating-label {
+        display: none;
+    }
+
+    .push-floating-icon {
+        font-size: 1.15rem;
+    }
+
+    .push-floating-status {
+        max-width: 220px;
+    }
+
 }
 
 /* ==========================================
