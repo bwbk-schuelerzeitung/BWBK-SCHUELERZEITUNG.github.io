@@ -25,6 +25,44 @@ OneSignalDeferred.push(
             );
 
 
+        let statusTimeout;
+
+
+        function showPushStatus(
+            message
+        ) {
+            if (!status) {
+                return;
+            }
+
+
+            clearTimeout(
+                statusTimeout
+            );
+
+
+            status.textContent =
+                message;
+
+
+            status.hidden =
+                false;
+
+
+            statusTimeout =
+                setTimeout(
+                    () => {
+                        status.textContent =
+                            "";
+
+                        status.hidden =
+                            true;
+                    },
+                    10000
+                );
+        }
+
+
         if (!button) {
             return;
         }
@@ -45,10 +83,11 @@ OneSignalDeferred.push(
             button.hidden =
                 true;
 
-            if (status) {
-                status.textContent =
-                    "Benachrichtigungen werden auf diesem Gerät nicht unterstützt.";
-            }
+
+            showPushStatus(
+                "Push-Benachrichtigungen werden von diesem Browser nicht unterstützt."
+            );
+
 
             return;
         }
@@ -64,6 +103,7 @@ OneSignalDeferred.push(
             const permission =
                 OneSignal.Notifications
                     .permission;
+
 
             const optedIn =
                 OneSignal.User
@@ -110,11 +150,6 @@ OneSignalDeferred.push(
                 );
 
 
-                if (status) {
-                    status.textContent =
-                        "Benachrichtigungen für neue Ausgaben und wichtige Termine sind aktiviert.";
-                }
-
                 return;
             }
 
@@ -152,12 +187,6 @@ OneSignalDeferred.push(
                 "title",
                 "Benachrichtigungen aktivieren"
             );
-
-
-            if (status) {
-                status.textContent =
-                    "Benachrichtigungen für neue Ausgaben und wichtige Termine sind deaktiviert.";
-            }
         }
 
 
@@ -192,7 +221,14 @@ OneSignalDeferred.push(
                             .PushSubscription
                             .optOut();
 
+
                         updatePushStatus();
+
+
+                        showPushStatus(
+                            "Benachrichtigungen für neue Ausgaben und wichtige Termine sind deaktiviert."
+                        );
+
 
                         return;
                     }
@@ -225,10 +261,30 @@ OneSignalDeferred.push(
                         await OneSignal.User
                             .PushSubscription
                             .optIn();
+
+
+                        updatePushStatus();
+
+
+                        showPushStatus(
+                            "Benachrichtigungen für neue Ausgaben und wichtige Termine sind aktiviert."
+                        );
+
+
+                        return;
                     }
 
 
+                    /*
+                     * Berechtigung wurde nicht erteilt
+                     */
+
                     updatePushStatus();
+
+
+                    showPushStatus(
+                        "Benachrichtigungen wurden nicht aktiviert."
+                    );
 
                 } catch (error) {
                     console.error(
@@ -237,10 +293,9 @@ OneSignalDeferred.push(
                     );
 
 
-                    if (status) {
-                        status.textContent =
-                            "Die Benachrichtigungseinstellung konnte nicht geändert werden.";
-                    }
+                    showPushStatus(
+                        "Die Benachrichtigungseinstellung konnte nicht geändert werden."
+                    );
 
                 } finally {
                     button.disabled =
@@ -278,5 +333,19 @@ OneSignalDeferred.push(
          */
 
         updatePushStatus();
+
+
+        /*
+         * Beim normalen Laden keine
+         * dauerhafte Statusmeldung anzeigen.
+         */
+
+        if (status) {
+            status.textContent =
+                "";
+
+            status.hidden =
+                true;
+        }
     }
 );
